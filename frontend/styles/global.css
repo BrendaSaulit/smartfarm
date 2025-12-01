@@ -1,19 +1,42 @@
+:root {
+  --primary: #2a5d2a;
+  --accent: #3b7a57;
+  --bg: #f1f3f1;
+  --card-bg: #ffffff;
+}
+
+* { box-sizing: border-box; }
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f1f3f1;
+  font-family: Inter, Arial, sans-serif;
+  background: var(--bg);
+  color: #222;
 }
-
-.container {
-  max-width: 1100px;
-  margin: auto;
-  padding: 20px;
-}
-
+.container { max-width: 1100px; margin: auto; padding: 20px; }
 .card {
-  background: white;
+  background: var(--card-bg);
   padding: 16px;
   border-radius: 10px;
-  box-shadow: 0 2px 8px #00000020;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   margin-bottom: 20px;
+}
+
+button {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.cv-btn {
+  background: var(--accent);
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  text-align: center;
+  display: inline-block;
 }
