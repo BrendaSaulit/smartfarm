@@ -1,0 +1,492 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: var(--bg-color);
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  margin-bottom: 2rem;
+}
+
+.title {
+  color: var(--primary-color);
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+}
+
+.titleIcon {
+  font-size: 2.5rem;
+}
+
+.statusBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.userIcon {
+  font-size: 2rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.userName {
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 1.1rem;
+}
+
+.userStatus {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.connectionInfo {
+  text-align: right;
+}
+
+.connectionStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.statusDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.connected .statusDot {
+  background-color: var(--primary-color);
+  box-shadow: 0 0 10px var(--primary-color);
+}
+
+.connecting .statusDot {
+  background-color: #ff9800;
+  animation: pulse 1.5s infinite;
+}
+
+.disconnected .statusDot {
+  background-color: var(--error-color);
+}
+
+.connected {
+  color: var(--primary-color);
+}
+
+.connecting {
+  color: #ff9800;
+}
+
+.disconnected {
+  color: var(--error-color);
+}
+
+.lastUpdate {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Stats Grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.statCard {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.statCard:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 255, 0, 0.1);
+}
+
+.statCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-color), transparent);
+}
+
+.statHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.statIcon {
+  font-size: 1.8rem;
+}
+
+.statHeader h3 {
+  margin: 0;
+  flex-grow: 1;
+  color: var(--text-color);
+  font-size: 1.1rem;
+}
+
+.statBadge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.statBadge.normal {
+  background-color: rgba(0, 255, 0, 0.1);
+  color: var(--primary-color);
+  border: 1px solid rgba(0, 255, 0, 0.3);
+}
+
+.statBadge.high {
+  background-color: rgba(255, 107, 107, 0.1);
+  color: #ff6b6b;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.statBadge.low {
+  background-color: rgba(255, 193, 7, 0.1);
+  color: #ffc107;
+  border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.statValue {
+  text-align: center;
+  margin-bottom: 1rem;
+  min-height: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-right: 5px;
+}
+
+.unit {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+}
+
+.statFooter {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--border-color);
+  padding-top: 0.8rem;
+}
+
+/* Chart Section */
+.chartSection {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.sectionHeader h2 {
+  margin: 0;
+  color: var(--text-color);
+  font-size: 1.5rem;
+}
+
+.chartControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.chartInfo {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.refreshBtn {
+  background: var(--primary-color);
+  color: #000;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.refreshBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 255, 0, 0.3);
+}
+
+.refreshBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.chartContainer {
+  height: 400px;
+  background-color: rgba(42, 42, 42, 0.5);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.noData {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary);
+}
+
+.noDataIcon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.noData h3 {
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+
+.noData p {
+  text-align: center;
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+}
+
+.chartLegend {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.legendColor {
+  width: 15px;
+  height: 15px;
+  border-radius: 3px;
+}
+
+/* Navigation Section */
+.navigationSection {
+  margin-bottom: 2.5rem;
+}
+
+.navigationSection h2 {
+  color: var(--text-color);
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.navGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.navCard {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.navCardContent {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.5rem;
+  border-left: 5px solid;
+  transition: all 0.3s ease;
+  position: relative;
+  height: 100%;
+}
+
+.navCardContent:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary-color);
+  box-shadow: 0 10px 25px rgba(0, 255, 0, 0.1);
+}
+
+.navCardIcon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.navCardTitle {
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.navCardDescription {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.navCardArrow {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.navCard:hover .navCardArrow {
+  opacity: 1;
+  transform: translateX(5px);
+}
+
+/* System Info */
+.systemInfo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.infoCard {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+
+.infoCard h3 {
+  color: var(--text-color);
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.infoCard p {
+  margin: 0.5rem 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.infoCard strong {
+  color: var(--text-color);
+  margin-right: 5px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .statusBar {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .connectionInfo {
+    text-align: center;
+  }
+  
+  .sectionHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .chartControls {
+    justify-content: space-between;
+  }
+  
+  .chartContainer {
+    height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .navGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .systemInfo {
+    grid-template-columns: 1fr;
+  }
+}
