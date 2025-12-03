@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Currículo – Brenda Cristina Saulit Silva</title>
+  
+  <!-- Link para o arquivo CSS externo -->
+  <link rel="stylesheet" href="styles.css">
+  
+  <!--
+  ========================= INSTRUÇÕES PARA OS ALUNOS =========================
+  1) Este template usa CSS EXTERNO (arquivo styles.css separado)
+  2) NÃO use style="" nas tags HTML
+  3) Modifique apenas o arquivo styles.css para estilização
+  4) Mantenha os comentários TODO até completar todos os exercícios
+  5) Personalize o conteúdo HTML com suas informações
+  =========================================================================
+  -->
+</head>
+<body>
+  <!-- Container principal da página -->
+  <div class="container">
+    
+    <!-- ===================== SEÇÃO CABEÇALHO ===================== -->
+    <header class="cabecalho">
+      <div class="foto-container">
+        <img src="img/Perfil.png" 
+             alt="Foto de perfil" 
+             class="foto-perfil"/>
+      </div>
+      
+      <div class="info-principal">
+        <h1 class="nome-completo">Brenda Cristina Saulit Silva</h1>
+        <h2 class="cargo-objetivo">Desenvolvedora de Software</h2>
+        <p class="resumo-profissional">
+          Desenvolvedora web e estudante de Ciência da Computação, em constante evolução e motivada a criar soluções inovadoras.
+        </p>
+      </div>
+    </header>
+
+    <!-- ===================== GRID PRINCIPAL ===================== -->
+    <div class="grid-principal">
+      
+      <!-- COLUNA ESQUERDA -->
+      <aside class="coluna-esquerda">
+        
+        <!-- INFORMAÇÕES DE CONTATO -->
+        <section class="secao-contato">
+          <h3 class="titulo-secao">
+            <i class="icone">📞</i>
+            Contato
+          </h3>
+          <div class="lista-contato">
+            <div class="item-contato">
+              <span class="label">Email:</span>
+              <a href="mailto:brenda.saulit@gmail.com" class="link-contato">
+                brenda.saulit@gmail.com
+              </a>
+            </div>
+            <div class="item-contato">
+              <span class="label">Telefone:</span>
+              <span class="valor">(51) 99711-2022</span>
+            </div>
+            <div class="item-contato">
+              <span class="label">LinkedIn:</span>
+              <a href="https://www.linkedin.com/in/brenda-saulit/" class="link-contato">linkedin.com/in/brenda-saulit</a>
+            </div>
+            <div class="item-contato">
+              <span class="label">GitHub:</span>
+              <a href="https://github.com/BrendaSaulit" class="link-contato">github.com/BrendaSaulit</a>
+            </div>
+            <div class="item-contato">
+              <span class="label">Localização:</span>
+              <span class="valor">Canoas – RS</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- HABILIDADES TÉCNICAS -->
+        <section class="secao-habilidades">
+          <h3 class="titulo-secao">
+            <i class="icone">🛠️</i>
+            Habilidades Técnicas
+          </h3>
+          <div class="grid-habilidades">
+            <span class="chip-habilidade">HTML5</span>
+            <span class="chip-habilidade">CSS3</span>
+            <span class="chip-habilidade">JavaScript</span>
+            <span class="chip-habilidade">NodeJS</span>
+            <span class="chip-habilidade">React</span>
+            <span class="chip-habilidade">Java</span>
+            <span class="chip-habilidade">MySQL</span>
+            <span class="chip-habilidade">Docker</span>
+            <span class="chip-habilidade">Git/GitHub</span>
+          </div>
+        </section>
+
+        <!-- IDIOMAS -->
+        <section class="secao-idiomas">
+          <h3 class="titulo-secao">
+            <i class="icone">🌐</i>
+            Idiomas
+          </h3>
+          <div class="lista-idiomas">
+            <div class="item-idioma">
+              <span class="nome-idioma">Português</span>
+              <div class="barra-nivel">
+                <div class="nivel nivel-nativo"></div>
+              </div>
+              <span class="texto-nivel">Nativo</span>
+            </div>
+            <div class="item-idioma">
+              <span class="nome-idioma">Inglês</span>
+              <div class="barra-nivel">
+                <div class="nivel nivel-intermediario"></div>
+              </div>
+              <span class="texto-nivel">Intermediário</span>
+            </div>
+            <div class="item-idioma">
+              <span class="nome-idioma">Espanhol</span>
+              <div class="barra-nivel">
+                <div class="nivel nivel-basico"></div>
+              </div>
+              <span class="texto-nivel">Básico</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- CURSOS -->
+        <section class="secao-cursos">
+          <h3 class="titulo-secao">
+            <i class="icone">🏆</i>
+            Cursos
+          </h3>
+          <ul class="lista-cursos">
+            <li class="item-curso">
+              <strong>React: Desenvolvendo com JavaScript - Alura</strong>
+              <span class="data-curso">2025</span>
+            </li>
+            <li class="item-curso">
+              <strong>Node.js com diversos projetos - Udemy</strong>
+              <span class="data-curso">2025</span>
+            </li>
+            <li class="item-curso">
+              <strong>Java Foundations - Oracle</strong>
+              <span class="data-curso">2024</span>
+            </li>
+          </ul>
+        </section>
+      </aside>
+
+      <!-- COLUNA DIREITA -->
+      <main class="coluna-direita">
+        
+        <!-- EXPERIÊNCIA PROFISSIONAL -->
+        <section class="secao-experiencia">
+          <h3 class="titulo-secao-principal">
+            <i class="icone-principal">💼</i>
+            Experiência Profissional
+          </h3>
+          
+            <article class="item-experiencia">
+              <div class="marcador-timeline"></div>
+              <div class="conteudo-experiencia">
+                <div class="cabecalho-experiencia">
+                  <h4 class="cargo">Estagiária de Desenvolvimento de Software</h4>
+                  <span class="empresa">SERPRO</span>
+                </div>
+                <p class="periodo">Jun 2025 - Atual</p>
+                <ul class="responsabilidades">
+                  <li>Análise e desenvolvimento de sistemas web;</li>
+                  <li>Desenvolvimento backend e frontend;</li>
+                  <li>Análise e desenvolvimento de sistemas descentralizados e Implementação de Smart Contracts (Oráculos) em Solidity;</li>
+                </ul>
+                <div class="tags-tecnologias">
+                  
+                  <span class="tag-tech">Solidity</span>
+                  <span class="tag-tech">JavaScript</span>
+                  <span class="tag-tech">React</span>
+                  <span class="tag-tech">Node.js</span>
+                  <span class="tag-tech">Docker</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="item-experiencia">
+              <div class="marcador-timeline"></div>
+              <div class="conteudo-experiencia">
+                <div class="cabecalho-experiencia">
+                  <h4 class="cargo">Estagiária de Desenvolvimento Back-End</h4>
+                  <span class="empresa">COMPASS UOL</span>
+                </div>
+                <p class="periodo">Mar 2025 - Mai 2025</p>
+                <ul class="responsabilidades">
+                  <li>Desenvolvimento de serviços web: uso de Express, MySQL e Sequelize para criação de soluções eficientes;</li>
+                  <li>APIs RESTful: criação e integração com bancos de dados;</li>
+                  <li>Controle de versões utilizando Git e Github e aplicação prática do modelo Scrum;</li>
+                  <li>Linguagens: JavaScript, TypeScript e NodeJS;</li>
+                </ul>
+                <div class="tags-tecnologias">
+                  <span class="tag-tech">HTML/CSS</span>
+                  <span class="tag-tech">JavaScript</span>
+                  <span class="tag-tech">TypeScript</span>
+                  <span class="tag-tech">NodeJS</span>
+                  <span class="tag-tech">Git</span>
+                  <span class="tag-tech">MySQL</span>
+                    </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- FORMAÇÃO ACADÊMICA -->
+        <section class="secao-formacao">
+          <h3 class="titulo-secao-principal">
+            <i class="icone-principal">🎓</i>
+            Formação Acadêmica
+          </h3>
+          
+          <div class="lista-formacao">
+            <div class="item-formacao">
+              <div class="info-curso">
+                <h4 class="nome-curso">Bacharelado em Ciência da Computação</h4>
+                <p class="instituicao">Universidade La Salle</p>
+                <p class="periodo-curso">Previsão de conclusão: Dezembro de 2027</p>
+              </div>
+              <div class="status-curso">
+                <span class="badge-cursando">Em Andamento</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PROJETOS DESTACADOS -->
+        <section class="secao-projetos">
+          <h3 class="titulo-secao-principal">
+            <i class="icone-principal">🚀</i>
+            Projetos Destacados
+          </h3>
+          
+          <div class="grid-projetos">
+            <div class="card-projeto">
+              <h4 class="nome-projeto">COMPASS CAR - API de gerenciamento de carros</h4>
+              <p class="descricao-projeto">
+                MVP (Produto Mínimo Viável) de uma API projetada para gerenciar carros.
+                Esta API fornece a funcionalidade essencial de CRUD (Criar, Ler, Atualizar
+                 e Excluir) para o gerenciamento de carros, juntamente com as validações
+                  necessárias para garantir a integridade dos dados.
+
+              </p>
+              <div class="tecnologias-projeto">
+                <span class="tech-tag">Node.js</span>
+                <span class="tech-tag">Express</span>
+                <span class="tech-tag">MySQL</span>
+                <span class="tech-tag">Sequelize</span>
+              </div>
+              <div class="links-projeto">
+                <a href="https://github.com/BrendaSaulit/ANMAR25_D01_COMPASSCAR" class="link-projeto">GitHub</a>
+              </div>
+            </div>
+
+            <div class="card-projeto">
+              <h4 class="nome-projeto">TASKLY - API de gerenciamento de tarefas e anotações</h4>
+              <p class="descricao-projeto">
+                Uma API RESTful para gerenciar tarefas (cards) e suas anotações.
+                 Desenvolvida com foco em práticas modernas de desenvolvimento backend.
+
+              </p>
+              <div class="tecnologias-projeto">
+                <span class="tech-tag">Node.js</span>
+                <span class="tech-tag">Express</span>
+                <span class="tech-tag">SQLite</span>
+                <span class="tech-tag">Prisma</span>
+              </div>
+              <div class="links-projeto">
+                <a href="https://github.com/BrendaSaulit/ANMAR25_DSUP_TASKLY" class="link-projeto">GitHub</a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ===================== RODAPÉ COM AÇÕES ===================== -->
+    <footer class="rodape">
+      <div class="acoes-curriculo">
+        <a href="#" class="btn-acao btn-primario">
+          <i class="icone-btn">📄</i>
+          Baixar PDF
+        </a>
+        <a href="#" class="btn-acao btn-secundario">
+          <i class="icone-btn">💼</i>
+          Ver Portfólio
+        </a>
+        <a href="/cdn-cgi/l/email-protection#dfacbaaaf1bab2beb6b39fbaa7bab2afb3b0f1bcb0b2" class="btn-acao btn-secundario">
+          <i class="icone-btn">📧</i>
+          Entrar em Contato
+        </a>
+      </div>
+      
+      <div class="info-rodape">
+        <p>&copy; 2025 Brenda Cristina Saulit Silva. Todos os direitos reservados.</p>
+        <p class="atualizacao">Última atualização: Outubro 2025</p>
+      </div>
+    </footer>
+  </div>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body>
+</html>

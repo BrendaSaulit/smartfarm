@@ -3,10 +3,10 @@ import styles from '../styles/contato.module.css';
 
 // Dados dos desenvolvedores
 const developers = [
-  { name: 'Brenda', role: 'Desenvolvedora', cvPath: '/cv/brenda/index.html' },
+  { name: 'Brenda', role: 'Desenvolvedora', cvPath: '/cv/brenda/curriculo-template.html' },
   { name: 'João', role: 'Desenvolvedor', cvPath: '/cv/joao/curriculo_JoaoVitorNunes_DevWeb/curriculo-template.html' },
-  { name: 'Gustavo', role: 'Desenvolvedor', cvPath: '/cv/gustavo/index.html' },
-  { name: 'Bernardo', role: 'Desenvolvedor', cvPath: '/cv/bernardo/index.html' },
+  { name: 'Gustavo', role: 'Desenvolvedor', cvPath: '/cv/gustavo/Curriculo_Gustavo/curriculo-template.html' },
+  { name: 'Bernardo', role: 'Desenvolvedor', cvPath: '/cv/bernardo/curriculo_bernardo.html' },
 ];
 
 export default function Contato() {
