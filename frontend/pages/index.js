@@ -136,7 +136,7 @@ export default function Home() {
     { 
       id: 2, 
       title: 'Atuadores', 
-      path: '/atuador', 
+      path: '/atuadores', 
       icon: '⚙️', 
       description: 'Controle de dispositivos e automação',
       color: '#4ecdc4'
