@@ -1,4 +1,4 @@
-  .container {
+.container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
@@ -441,6 +441,153 @@
   .footerInfo {
     color: var(--text-secondary);
     font-size: 0.9rem;
+  }
+
+  /* Chart Section*/
+  .chartSection {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .sectionHeader h2 {
+    margin: 0;
+    color: var(--text-color);
+    font-size: 1.5rem;
+  }
+
+  .chartControls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .chartInfo {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .refreshBtn,
+  .refreshButton,
+  .refreshBtn,
+  .refreshBtn:hover {
+    background: var(--primary-color);
+    color: #000;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+  }
+
+  .refreshBtn:hover:not(:disabled),
+  .refreshButton:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 255, 0, 0.3);
+  }
+
+  .refreshBtn:disabled,
+  .refreshButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  /* área do gráfico */
+  .chartContainer {
+    height: 400px;
+    background-color: rgba(42, 42, 42, 0.5);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* canvas responsivo dentro do container */
+  .chartContainer canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+  }
+
+  /* estado sem dados */
+  .noData {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .noDataIcon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+
+  .noData h3 {
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+  }
+
+  .noData p {
+    text-align: center;
+    margin: 0.25rem 0;
+    font-size: 0.9rem;
+  }
+
+  /* legenda do gráfico */
+  .chartLegend {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 0.25rem;
+  }
+
+  .legendItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-color);
+    font-size: 0.9rem;
+  }
+
+  .legendColor {
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+    display: inline-block;
+  }
+
+  /* pequenas adaptações responsivas */
+  @media (max-width: 768px) {
+    .chartContainer { height: 300px; }
+    .sectionHeader { flex-direction: column; align-items: stretch; }
+    .chartControls { justify-content: space-between; }
+  }
+
+  @media (max-width: 480px) {
+    .chartContainer { height: 260px; }
+    .sectionHeader h2 { font-size: 1.1rem; }
   }
 
   /* Responsividade */
