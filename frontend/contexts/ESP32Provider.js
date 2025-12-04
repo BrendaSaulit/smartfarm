@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef} from 'react';
 import ESP32Context from './ESP32Context';
 
 const ESP32_IP = "http://10.106.33.1";
@@ -12,6 +12,7 @@ export default function ESP32Provider({ children }) {
   const [lastUpdate, setLastUpdate] = useState(null);
   const [lastError, setLastError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const hasLoadedOnceRef = useRef(false);
   const [isSendingCommand, setIsSendingCommand] = useState(false);
 
   // Função para normalizar luminosidade
@@ -24,7 +25,11 @@ export default function ESP32Provider({ children }) {
   // Função principal para buscar dados do ESP32
   const fetchSensorData = useCallback(async () => {
     try {
-      setIsLoading(true);
+      
+      if (!hasLoadedOnceRef.current) {
+        setIsLoading(true); 
+      }
+      
       setLastError(null);
       
       // Timeout de 3 segundos
@@ -111,6 +116,10 @@ export default function ESP32Provider({ children }) {
       setLastUpdate(new Date().toLocaleTimeString());
       
     } finally {
+
+      if (!hasLoadedOnceRef.current) {
+        hasLoadedOnceRef.current = true;
+      }
       setIsLoading(false);
     }
   }, []);
