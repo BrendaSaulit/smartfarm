@@ -2,9 +2,11 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import styles from '../styles/login.module.css';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Login() {
   const router = useRouter();
+  const { login } = useAuth();
   const [usuario, setUsuario] = useState('');
   const [senha, setSenha] = useState('');
   const [showSenha, setShowSenha] = useState(false);
@@ -31,15 +33,14 @@ export default function Login() {
     if (userValid) {
       const mathRandom = Math.random().toString(16).substring(2);
       const token = mathRandom + mathRandom;
-      localStorage.setItem('token', token);
-      localStorage.setItem(
-        'userLogado',
-        JSON.stringify({
-          nome: userValid.nomeCad,
-          user: userValid.userCad,
-          senha: userValid.senhaCad
-        })
-      );
+      
+      const userData = {
+      username: userValid.userCad,
+      nome: userValid.nomeCad,
+      senha: userValid.senhaCad,
+      };
+      
+      login(token, userData);
       router.push('/');
     } else {
       setIsError(true);

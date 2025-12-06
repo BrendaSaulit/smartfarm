@@ -303,7 +303,7 @@ export default function Home() {
           <h3>📋 Informações do Sistema</h3>
           <p><strong>Usuário:</strong> {user ? user.username : 'demo_user'}</p>
           <p><strong>Sessão iniciada:</strong> {new Date().toLocaleDateString('pt-BR')}</p>
-          <p><strong>Versão:</strong> Smart Farm v2.0.0</p>
+          <p><strong>Versão:</strong> Smart Farm v1.0.0</p>
           <p><strong>Modo atual:</strong> {dataSource}</p>
         </div>
       </div>

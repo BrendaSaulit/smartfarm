@@ -1,12 +1,19 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react';
 import styles from '../styles/navbar.module.css';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function NavBar() {
   const router = useRouter();
   const { user, logout } = useAuth();
+  const [isClient, setIsClient] = useState(false);
 
+  useEffect(() => {
+    setIsClient(true); // ← Marca que estamos no client-side
+  }, []);
+  if (!isClient) return null; // ← Evita renderização no server-side
+  
   const navItems = [
     { path: '/', label: 'Home', icon: '🏠' },
     { path: '/sensores', label: 'Sensores', icon: '📡' },
@@ -52,7 +59,7 @@ export default function NavBar() {
             <span className={styles.userIcon}>👤</span>
             <div className={styles.userDetails}>
               <span className={styles.userName}>
-                {user ? user.name : 'Aluno Demo'}
+                {user ? user.username : 'Aluno Demo'}
               </span>
               <span className={styles.userStatus}>
                 {user ? 'Online' : 'Offline'}
