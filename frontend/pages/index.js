@@ -233,13 +233,6 @@ export default function Home() {
                 ? 'Dados em tempo real do ESP32 | Atualização: 2s' 
                 : 'Dados simulados para demonstração | Atualização: 2s'}
             </span>
-            <button 
-              onClick={fetchSensorData} 
-              className={styles.refreshBtn}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Atualizando...' : 'Atualizar Agora'}
-            </button>
           </div>
         </div>
         

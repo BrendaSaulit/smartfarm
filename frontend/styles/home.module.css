@@ -265,28 +265,6 @@
   font-size: 0.9rem;
 }
 
-.refreshBtn {
-  background: var(--primary-color);
-  color: #000;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  font-size: 0.9rem;
-}
-
-.refreshBtn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 255, 0, 0.3);
-}
-
-.refreshBtn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
 .chartContainer {
   height: 400px;
   background-color: rgba(42, 42, 42, 0.5);
