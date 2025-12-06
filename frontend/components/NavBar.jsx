@@ -10,9 +10,10 @@ export default function NavBar() {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true); // ← Marca que estamos no client-side
+    setIsClient(true);
   }, []);
-  if (!isClient) return null; // ← Evita renderização no server-side
+  
+  if (!isClient) return null;
   
   const navItems = [
     { path: '/', label: 'Home', icon: '🏠' },
@@ -61,7 +62,13 @@ export default function NavBar() {
               <span className={styles.userName}>
                 {user ? user.username : 'Aluno Demo'}
               </span>
-              <span className={styles.userStatus}>
+              
+              {/* Status limpo e centralizado */}
+              <span 
+                className={`${styles.userStatus} ${
+                  user ? styles.online : styles.offline
+                }`}
+              >
                 {user ? 'Online' : 'Offline'}
               </span>
             </div>
