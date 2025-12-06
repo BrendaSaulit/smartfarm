@@ -18,34 +18,31 @@ export default function Login() {
     if (usuarioRef.current) usuarioRef.current.focus();
   }, []);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setMsg('');
     setIsError(false);
-
-    if (typeof window === 'undefined') return;
-
-    const listaUser = JSON.parse(localStorage.getItem('listaUser') || '[]');
-    const userValid = listaUser.find(
-      (u) => u.userCad === usuario && u.senhaCad === senha
-    );
-
-    if (userValid) {
-      const mathRandom = Math.random().toString(16).substring(2);
-      const token = mathRandom + mathRandom;
+    
+    if (!usuario.trim() || !senha.trim()) {
+      setIsError(true);
+      setMsg('Preencha todos os campos');
+      return;
+    }
+    
+    // Usar o AuthContext com backend
+    const result = await login(usuario, senha);
+    
+    if (result.success) {
+      setMsg('Login realizado com sucesso!');
+      setIsError(false);
       
-      const userData = {
-      username: userValid.userCad,
-      nome: userValid.nomeCad,
-      senha: userValid.senhaCad,
-      };
-      
-      login(token, userData);
-      router.push('/');
+      // Redirecionar após breve delay
+      setTimeout(() => {
+        router.push('/');
+      }, 1000);
     } else {
       setIsError(true);
-      setMsg('Usuário ou senha incorretos');
-      if (usuarioRef.current) usuarioRef.current.focus();
+      setMsg(result.error || 'Credenciais inválidas');
     }
   }
 

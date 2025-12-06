@@ -1,11 +1,12 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
-// IMPORTANTE: Garantir que você importe os estilos corretos para esta página
 import styles from '../styles/signup.module.css'; 
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Signup() {
   const router = useRouter();
+  const { signup } = useAuth();
   const [nome, setNome] = useState('');
   const [usuario, setUsuario] = useState('');
   const [senha, setSenha] = useState('');
@@ -19,50 +20,52 @@ export default function Signup() {
     if (nomeRef.current) nomeRef.current.focus();
   }, []);
 
-  function handleSubmit(e) {
+// frontend/pages/signup.js - APENAS a função handleSubmit
+  async function handleSubmit(e) {
     e.preventDefault();
     setMsg('');
     setIsError(false);
-
-    // Validação básica
+    
+    // Validações básicas
+    if (!nome.trim() || !usuario.trim() || !senha.trim() || !confirmaSenha.trim()) {
+      setIsError(true);
+      setMsg('Preencha todos os campos');
+      return;
+    }
+    
     if (senha !== confirmaSenha) {
       setIsError(true);
-      setMsg('As senhas não coincidem.');
+      setMsg('As senhas não coincidem');
       return;
     }
-
-    if (usuario.length < 5 || senha.length < 6) {
+    
+    if (usuario.length < 3) {
       setIsError(true);
-      setMsg('Verifique os requisitos mínimos de caracteres.');
+      setMsg('Usuário deve ter pelo menos 3 caracteres');
       return;
     }
-
-    if (typeof window === 'undefined') return;
-
-    // Lógica para salvar usuário no localStorage (Reutilizando a lógica do Login)
-    const listaUser = JSON.parse(localStorage.getItem('listaUser') || '[]');
-    const userExists = listaUser.some((u) => u.userCad === usuario);
-
-    if (userExists) {
+    
+    if (senha.length < 6) {
       setIsError(true);
-      setMsg('Usuário já cadastrado.');
+      setMsg('Senha deve ter pelo menos 6 caracteres');
       return;
     }
-
-    listaUser.push({
-      nomeCad: nome,
-      userCad: usuario,
-      senhaCad: senha,
-    });
-    localStorage.setItem('listaUser', JSON.stringify(listaUser));
-
-    setIsError(false);
-    setMsg('Cadastro realizado com sucesso! Faça login.');
-
-    // Redireciona para a página de login após 2 segundos
-    setTimeout(() => {
-      router.push('/login');
-    }, 2000);
+    
+    // Usar o AuthContext com backend
+    const result = await signup(usuario, nome, senha);
+    
+    if (result.success) {
+      setIsError(false);
+      setMsg('Cadastro realizado com sucesso! Redirecionando...');
+      
+      // Redirecionar após cadastro
+      setTimeout(() => {
+        router.push('/');
+      }, 2000);
+    } else {
+      setIsError(true);
+      setMsg(result.error || 'Erro ao criar conta');
+    }
   }
 
   const containerClass = `${styles.container} ${isError ? styles.hasError : ''}`;
