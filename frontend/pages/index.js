@@ -21,6 +21,34 @@ export default function Home() {
     config                // Configuração (inclui ESP32_IP)
   } = useESP32();
 
+  // Funções auxiliares simplificadas
+  const getTemperatureStatus = (temp) => {
+    if (!temp) return 'normal';
+    if (temp > 30) return 'high';
+    if (temp < 20) return 'low';
+    return 'normal';
+  };
+
+  const getSoilStatus = (soil) => {
+    if (!soil) return 'normal';
+    if (soil > 60) return 'high';
+    if (soil < 40) return 'low';
+    return 'normal';
+  };
+
+  const getLightStatus = (light) => {
+    if (!light) return 'normal';
+    if (light > 80) return 'high';
+    if (light < 50) return 'low';
+    return 'normal';
+  };
+
+  const getWaterStatus = (water) => {
+    if (!water) return 'normal';
+    if (water < 20) return 'low';
+    return 'normal';
+  };
+
   // Cards de navegação (mantendo igual)
   const navCards = [
     { 
@@ -85,10 +113,6 @@ export default function Home() {
     ]
   };
 
-  // A função normalizeLight agora está NO CONTEXTO
-  // O fallback de demonstração agora está NO CONTEXTO
-  // A conexão periódica agora está NO CONTEXTO
-
   return (
     <div className={styles.container}>
       {/* Cabeçalho - mantendo igual */}
@@ -128,14 +152,20 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Grid de cards de status - mantendo igual */}
+      {/* Grid de cards de status - VOLTANDO AO ESTILO ORIGINAL */}
       <div className={styles.statsGrid}>
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <span className={styles.statIcon}>🌡️</span>
             <h3>Temperatura</h3>
-            <span className={`${styles.statBadge} ${sensorData?.temperature > 30 ? styles.high : styles.normal}`}>
-              {sensorData?.temperature > 30 ? 'Alta' : 'Normal'}
+            <span className={`${styles.statBadge} ${
+              getTemperatureStatus(sensorData?.temperature) === 'high' ? styles.high : 
+              getTemperatureStatus(sensorData?.temperature) === 'low' ? styles.low : 
+              styles.normal
+            }`}>
+              {getTemperatureStatus(sensorData?.temperature) === 'high' ? 'Alta' : 
+               getTemperatureStatus(sensorData?.temperature) === 'low' ? 'Baixa' : 
+               'Normal'}
             </span>
           </div>
           <div className={styles.statValue}>
@@ -157,8 +187,14 @@ export default function Home() {
           <div className={styles.statHeader}>
             <span className={styles.statIcon}>💧</span>
             <h3>Umidade do Solo</h3>
-            <span className={`${styles.statBadge} ${sensorData?.soil < 30 ? styles.low : styles.normal}`}>
-              {sensorData?.soil < 30 ? 'Baixa' : 'Normal'}
+            <span className={`${styles.statBadge} ${
+              getSoilStatus(sensorData?.soil) === 'high' ? styles.high : 
+              getSoilStatus(sensorData?.soil) === 'low' ? styles.low : 
+              styles.normal
+            }`}>
+              {getSoilStatus(sensorData?.soil) === 'high' ? 'Alta' : 
+               getSoilStatus(sensorData?.soil) === 'low' ? 'Baixa' : 
+               'Normal'}
             </span>
           </div>
           <div className={styles.statValue}>
@@ -180,8 +216,14 @@ export default function Home() {
           <div className={styles.statHeader}>
             <span className={styles.statIcon}>☀️</span>
             <h3>Luminosidade</h3>
-            <span className={`${styles.statBadge} ${sensorData?.light > 80 ? styles.high : styles.normal}`}>
-              {sensorData?.light > 80 ? 'Alta' : 'Normal'}
+            <span className={`${styles.statBadge} ${
+              getLightStatus(sensorData?.light) === 'high' ? styles.high : 
+              getLightStatus(sensorData?.light) === 'low' ? styles.low : 
+              styles.normal
+            }`}>
+              {getLightStatus(sensorData?.light) === 'high' ? 'Alta' : 
+               getLightStatus(sensorData?.light) === 'low' ? 'Baixa' : 
+               'Normal'}
             </span>
           </div>
           <div className={styles.statValue}>
@@ -203,8 +245,10 @@ export default function Home() {
           <div className={styles.statHeader}>
             <span className={styles.statIcon}>🚰</span>
             <h3>Nível da Água</h3>
-            <span className={`${styles.statBadge} ${sensorData?.water < 20 ? styles.low : styles.normal}`}>
-              {sensorData?.water < 20 ? 'Baixo' : 'Normal'}
+            <span className={`${styles.statBadge} ${
+              getWaterStatus(sensorData?.water) === 'low' ? styles.low : styles.normal
+            }`}>
+              {getWaterStatus(sensorData?.water) === 'low' ? 'Baixo' : 'Normal'}
             </span>
           </div>
           <div className={styles.statValue}>
