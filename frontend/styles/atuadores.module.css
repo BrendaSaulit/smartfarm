@@ -71,17 +71,12 @@
   border-radius: 50%;
 }
 
-.statusDot.ready {
+.statusDot.connected {
   background-color: var(--primary-color);
   box-shadow: 0 0 10px var(--primary-color);
 }
 
-.statusDot.success {
-  background-color: #06d6a0;
-  box-shadow: 0 0 10px #06d6a0;
-}
-
-.statusDot.error {
+.statusDot.disconnected {
   background-color: var(--error-color);
   animation: pulse 1.5s infinite;
 }
@@ -280,7 +275,11 @@
   border-radius: 10px;
   padding: 1.5rem;
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Altura total do grid */
 }
+
 
 .actuatorCard:hover {
   border-color: var(--primary-color);
@@ -345,27 +344,30 @@
   font-size: 0.95rem;
   line-height: 1.5;
   margin-bottom: 1.5rem;
-  min-height: 60px;
+  flex-grow: 1; /* Faz a descrição ocupar espaço disponível */
 }
 
 .actuatorActions {
-  display: flex;
-  gap: 10px;
   margin-bottom: 1.5rem;
 }
 
 .controlButton {
-  flex: 1;
+  width: 100%;
   background: var(--primary-color);
   color: #000;
   border: none;
-  padding: 10px 15px;
+  padding: 12px 15px;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
   transition: all 0.3s ease;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  height: 44px; /* Altura fixa */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 
 .controlButton:hover:not(:disabled) {
   opacity: 0.9;
@@ -377,23 +379,6 @@
   cursor: not-allowed;
 }
 
-.confirmButton {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
-  padding: 10px 15px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  font-size: 0.9rem;
-}
-
-.confirmButton:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: var(--primary-color);
-}
-
 .actuatorFooter {
   display: flex;
   justify-content: space-between;
@@ -402,6 +387,7 @@
   font-size: 0.85rem;
   padding-top: 1rem;
   border-top: 1px solid var(--border-color);
+  margin-top: auto; /* Empurra para o fundo */
 }
 
 .actuatorId {
