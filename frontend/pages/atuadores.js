@@ -216,8 +216,6 @@ export default function Atuador() {
         <div className={styles.connectionInfo}>
           <h3>🌐 Controle do ESP32</h3>
           <p><strong>Endereço IP:</strong> {config?.ip}</p>
-          <p><strong>Endpoint:</strong> {config?.ip}/actuator?cmd=COMANDO</p>
-          
           <p><strong>Status ESP32:</strong> 
             <span className={connectionStatus === 'Conectado' ? styles.statusGood : styles.statusBad}>
               {connectionStatus}
@@ -227,19 +225,6 @@ export default function Atuador() {
           {lastError && connectionStatus !== 'Conectado' && (
             <p><strong>Último erro:</strong> <span className={styles.statusBad}>{lastError}</span></p>
           )}
-        </div>
-        
-        <div className={styles.connectionActions}>
-          <button 
-            onClick={() => sendCmd('TEST')} 
-            className={styles.testButton}
-            disabled={isSendingCommand}
-          >
-            {isSendingCommand ? '⏳ Testando...' : '🧪 Testar Conexão'}
-          </button>
-          <span className={styles.updateInfo}>
-            Clique para testar comunicação com ESP32
-          </span>
         </div>
       </div>
 
@@ -454,24 +439,16 @@ export default function Atuador() {
           <p>3. O sistema aguarda confirmação da execução</p>
           <p>4. O histórico mantém registro de todos os comandos</p>
         </div>
-        
-        <div className={styles.infoCard}>
-          <h3>⚠️ Precauções</h3>
-          <p>• Verifique os sensores antes de acionar sistemas</p>
-          <p>• Não acione a irrigação com nível de água baixo</p>
-          <p>• Use o modo automático para operação contínua</p>
-          <p>• Monitore o histórico para diagnóstico</p>
-        </div>
       </div>
 
       {/* Navegação */}
       <div className={styles.navigation}>
         <Link href="/sensores" className={styles.navButton}>
           <span className={styles.navIcon}>←</span>
-          Voltar para Sensores
+          Sensores
         </Link>
-        <Link href="/" className={styles.navButtonPrimary}>
-          Ir para Dashboard
+        <Link href="/" className={styles.navButton}>
+          Indicadores
           <span className={styles.navIcon}>→</span>
         </Link>
       </div>
