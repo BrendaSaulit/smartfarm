@@ -30,7 +30,6 @@ export default function ESP32Provider({ children }) {
         setIsLoading(true); 
       }
       
-      setLastError(null);
       
       // Timeout de 3 segundos
       const controller = new AbortController();
@@ -47,6 +46,10 @@ export default function ESP32Provider({ children }) {
       }
       
       const data = await response.json();
+
+      if (lastError) {
+        setLastError(null);
+      }
       
       // Validação básica dos dados
       if (!data || typeof data !== 'object') {
@@ -84,7 +87,9 @@ export default function ESP32Provider({ children }) {
       console.error('Erro ao buscar dados do ESP32:', error);
       setConnectionStatus('Desconectado');
       setDataSource('Simulação (Demo)');
-      setLastError(error.message);
+      if (error.message !== lastError) {
+        setLastError(error.message);
+      }
       
       // Dados simulados para demonstração
       const simulatedData = {
