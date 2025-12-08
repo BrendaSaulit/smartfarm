@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef} from 'react';
 import ESP32Context from './ESP32Context';
 
-const ESP32_IP = "http://10.106.33.1";
+const ESP32_IP = "http://localhost:3002";
 
 export default function ESP32Provider({ children }) {
   // Estado principal

@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
 
 // Configuração do ESP32 (mantendo consistência)
-const ESP32_IP = "http://10.106.33.1";
+const ESP32_IP = "http://localhost:3002"; // Padrão para mock, pode ser sobrescrito
 
 // Estrutura do contexto
 const ESP32Context = createContext({
