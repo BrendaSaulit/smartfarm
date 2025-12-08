@@ -269,18 +269,16 @@ Nível da Água: ${sensorData.water?.toFixed(0) || '--'} %`}
       </div>
 
       {/* Rodapé */}
-      <div className={styles.footer}>
-        <div className={styles.footerLinks}>
-          <Link href="/" className={styles.footerLink}>
-            ← Dashboard Principal
-          </Link>
-          <Link href="/atuadores" className={styles.footerLink}>
-            Atuadores →
-          </Link>
-        </div>
-        <div className={styles.footerInfo}>
-          Smart Farm v1.0.0 | Página de Sensores 
-        </div>
+      {/* Navegação - NOVO (igual a atuadores) */}
+      <div className={styles.navigation}>
+        <Link href="/" className={styles.navButton}>
+          <span className={styles.navIcon}>←</span>
+          Dashboard
+        </Link>
+        <Link href="/atuadores" className={styles.navButton}>
+          Atuadores
+          <span className={styles.navIcon}>→</span>
+        </Link>
       </div>
     </div>
   );
