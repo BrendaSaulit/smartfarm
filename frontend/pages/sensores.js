@@ -157,26 +157,12 @@ export default function Sensores() {
         <div className={styles.connectionInfo}>
           <h3>🌐 Conexão ESP32</h3>
           <p><strong>Endereço IP:</strong> {config?.ip}</p>
-          <p><strong>Status:</strong> 
+          <p><strong>Status da conexão:</strong> 
             <span className={connectionStatus === 'Conectado' ? styles.statusGood : styles.statusBad}>
               {connectionStatus}
             </span>
           </p>
-          <p><strong>Atualização:</strong> A cada 2 segundos</p>
           <p><strong>Fonte de dados:</strong> {dataSource}</p>
-        </div>
-        
-        <div className={styles.connectionActions}>
-          <button 
-            onClick={fetchSensorData} 
-            className={styles.refreshButton}
-            disabled={isLoading}
-          >
-            {isLoading ? '🔄 Conectando...' : '🔄 Atualizar Agora'}
-          </button>
-          <span className={styles.updateInfo}>
-            {isLoading ? 'Conectando aos sensores...' : 'Dados em tempo real'}
-          </span>
         </div>
       </div>
 
@@ -293,7 +279,7 @@ Nível da Água: ${sensorData.water?.toFixed(0) || '--'} %`}
           </Link>
         </div>
         <div className={styles.footerInfo}>
-          Smart Farm v2.0.0 | Página de Sensores | {new Date().toLocaleDateString('pt-BR')}
+          Smart Farm v1.0.0 | Página de Sensores 
         </div>
       </div>
     </div>
