@@ -556,20 +556,22 @@
   color: #ff6b6b;
 }
 
+.statusGood {
+  color: #06d6a0;
+  font-weight: 600;
+  margin-left: 5px;
+}
+
+.statusBad {
+  color: var(--error-color);
+  font-weight: 600;
+  margin-left: 5px;
+}
+
 .errorText {
   color: #ff6b6b;
   font-size: 0.85rem;
   margin-top: 0.75rem;
   padding-top: 0.75rem;
   border-top: 1px dashed rgba(255, 107, 107, 0.3);
-}
-
-.statusGood {
-  color: var(--primary-color);
-  font-weight: 600;
-}
-
-.statusBad {
-  color: #ff6b6b;
-  font-weight: 600;
 }

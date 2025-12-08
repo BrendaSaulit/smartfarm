@@ -138,12 +138,12 @@ export default function Home() {
           <div className={styles.modeDetails}>
             <p><strong>Fonte de dados:</strong> {dataSource}</p>
             <p><strong>Status da conexão:</strong> 
-              <span className={`${styles.statusText} ${connectionStatus === 'Conectado' ? styles.statusConnected : styles.statusDisconnected}`}>
+              <span className={`${styles.statusText} ${connectionStatus === 'Conectado' ? styles.statusGood : styles.statusBad}`}>
                 {connectionStatus}
               </span>
             </p>
             <p><strong>Última atualização:</strong> {lastUpdate || '--:--'}</p>
-            {lastError && (
+            {lastError && connectionStatus != 'Conectado' && (
               <p className={styles.errorText}>
                 <strong>Último erro:</strong> {lastError}
               </p>
@@ -340,7 +340,6 @@ export default function Home() {
             </span>
           </p>
           <p><strong>Intervalo de atualização:</strong> 2 segundos</p>
-          <p><strong>Tentativas de reconexão:</strong> Automáticas (2s)</p>
         </div>
         
         <div className={styles.infoCard}>
