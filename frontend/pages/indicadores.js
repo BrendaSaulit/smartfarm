@@ -2,111 +2,35 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import LineChart from '../components/LineChart';
 import styles from '../styles/indicadores.module.css';
+import { useESP32 } from '../contexts/ESP32Context';
 
-// Reutilize a mesma configuração do ESP32
-const ESP32_IP = "http://10.106.33.1";
-
-export default function Sensores() {
+export default function Indicadores() {
   const router = useRouter();
-  const [sensorData, setSensorData] = useState(null);
-  const [sensorHistory, setSensorHistory] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [connectionStatus, setConnectionStatus] = useState('Conectando...');
-  const [lastUpdate, setLastUpdate] = useState(null);
+  
+  // ===== USANDO O CONTEXTO ESP32 (mesmo padrão de index.js, sensores.js e atuadores.js) =====
+  const { 
+    sensorData,           // dados atuais dos sensores
+    sensorHistory,        // histórico para o gráfico (array com últimas 20 leituras)
+    connectionStatus,     // 'Conectado' ou 'Desconectado'
+    dataSource,           // 'ESP32 (Real)' ou 'Simulação (Demo)'
+    lastUpdate,           // timestamp da última atualização
+    lastError,            // último erro capturado
+    isLoading,            // estado de carregamento
+    fetchSensorData,      // função manual para forçar atualização
+    config                // configuração (ESP32_IP)
+  } = useESP32();
+
+  // Estado local apenas para controle de UI (não duplica lógica de conexão)
   const [isUpdating, setIsUpdating] = useState(false);
-  const [dataSource, setDataSource] = useState('ESP32 (Real)');
-  const [lastError, setLastError] = useState(null);
 
-  // Função para normalizar luminosidade
-  const normalizeLight = (raw) => {
-    let light = Math.pow(raw / 4095.0, 0.6) * 100.0;
-    light = Math.round(light / 10) * 10;
-    return Math.min(100, Math.max(0, light));
-  };
-
-  // Função principal para buscar dados dos sensores (atualiza histórico)
-  const updateSensors = async () => {
-    if (isUpdating) return;
-
+  // Função para atualizar manualmente (chama o contexto)
+  const handleManualUpdate = async () => {
     setIsUpdating(true);
-    setIsLoading(true);
-    setLastError(null);
-
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 3000);
-
-      const res = await fetch(`${ESP32_IP}/sensors`, { signal: controller.signal });
-
-      clearTimeout(timeout);
-
-      if (!res.ok) throw new Error(`Falha HTTP ${res.status}`);
-
-      const data = await res.json();
-
-      if (data.light !== undefined) data.light = normalizeLight(data.light);
-
-      setSensorData(data);
-      setConnectionStatus('Conectado');
-      setDataSource('ESP32 (Real)');
-      setLastUpdate(new Date().toLocaleTimeString());
-
-      setSensorHistory(prev => {
-        const newH = [...prev, {
-          timestamp: new Date().toLocaleTimeString(),
-          temperature: data.temperature || 0,
-          humidity: data.humidity || 0,
-          soil: data.soil || 0,
-          light: data.light || 0,
-          water: data.water || 0
-        }];
-        return newH.slice(-20);
-      });
-
-    } catch (erro) {
-      console.error("Erro ao conectar com o ESP32:", erro);
-      setConnectionStatus('Desconectado');
-      setDataSource('Simulação (Demo)');
-      setLastError(erro?.message || String(erro));
-
-      const simulatedData = {
-        temperature: 24.8 + (Math.random() * 2 - 1),
-        humidity: 60 + (Math.random() * 10 - 5),
-        steam: 15 + (Math.random() * 10 - 5),
-        light: 70 + (Math.random() * 30 - 15),
-        soil: 45 + (Math.random() * 20 - 10),
-        water: 35 + (Math.random() * 20 - 10)
-      };
-
-      setSensorData(simulatedData);
-
-      setSensorHistory(prev => {
-        const newH = [...prev, {
-          timestamp: new Date().toLocaleTimeString(),
-          temperature: simulatedData.temperature,
-          humidity: simulatedData.humidity,
-          soil: simulatedData.soil,
-          light: simulatedData.light,
-          water: simulatedData.water
-        }];
-        return newH.slice(-20);
-      });
-
-      setLastUpdate(new Date().toLocaleTimeString());
-    } finally {
-      setIsLoading(false);
-      setIsUpdating(false);
-    }
+    await fetchSensorData();
+    setTimeout(() => setIsUpdating(false), 500);
   };
 
-  // Configura atualização periódica
-  useEffect(() => {
-    updateSensors();
-    const intervalId = setInterval(updateSensors, 2000);
-    return () => clearInterval(intervalId);
-  }, []);
-
-  // prepara dados para o gráfico (igual ao Home)
+  // ===== PREPARAÇÃO DOS DADOS PARA O GRÁFICO (idêntico ao index.js) =====
   const chartData = {
     labels: sensorHistory.map(item => item.timestamp.split(':').slice(0, 2).join(':')),
     datasets: [
@@ -166,22 +90,28 @@ export default function Sensores() {
       <div className={styles.connectionCard}>
         <div className={styles.connectionInfo}>
           <h3>🌐 Conexão ESP32</h3>
-          <p><strong>Endereço IP:</strong> {ESP32_IP}</p>
+          <p><strong>Endereço IP:</strong> {config.ESP32_IP}</p>
           <p><strong>Status:</strong> 
             <span className={connectionStatus === 'Conectado' ? styles.statusGood : styles.statusBad}>
               {connectionStatus}
             </span>
           </p>
-          <p><strong>Atualização:</strong> A cada 2 segundos</p>
+          <p><strong>Fonte de Dados:</strong> {dataSource}</p>
+          <p><strong>Atualização:</strong> A cada {config.UPDATE_INTERVAL / 1000} segundos</p>
+          {lastError && (
+            <p style={{color: 'var(--error-color)', fontSize: '0.85rem', marginTop: '0.5rem'}}>
+              <strong>Erro:</strong> {lastError}
+            </p>
+          )}
         </div>
         
         <div className={styles.connectionActions}>
           <button 
-            onClick={updateSensors} 
+            onClick={handleManualUpdate} 
             className={styles.refreshButton}
-            disabled={isUpdating}
+            disabled={isUpdating || isLoading}
           >
-            {isUpdating ? '🔄 Atualizando...' : '🔄 Atualizar Agora'}
+            {isUpdating || isLoading ? '🔄 Atualizando...' : '🔄 Atualizar Agora'}
           </button>
           <span className={styles.updateInfo}>
             {isLoading ? 'Conectando aos sensores...' : 'Dados em tempo real'}
@@ -189,22 +119,22 @@ export default function Sensores() {
         </div>
       </div>
 
-      {/* ====== Gráfico (importado da Home) ====== */}
+      {/* ====== GRÁFICO (idêntico ao index.js) ====== */}
       <div className={styles.chartSection}>
         <div className={styles.sectionHeader}>
           <h2>📈 Evolução Temporal dos Sensores</h2>
           <div className={styles.chartControls}>
             <span className={styles.chartInfo}>
               {dataSource === 'ESP32 (Real)' 
-                ? 'Dados em tempo real do ESP32 | Atualização: 2s' 
-                : 'Dados simulados para demonstração | Atualização: 2s'}
+                ? `Dados em tempo real do ESP32 | Atualização: ${config.UPDATE_INTERVAL / 1000}s` 
+                : `Dados simulados para demonstração | Atualização: ${config.UPDATE_INTERVAL / 1000}s`}
             </span>
             <button 
-              onClick={updateSensors} 
+              onClick={handleManualUpdate} 
               className={styles.refreshBtn}
-              disabled={isLoading}
+              disabled={isLoading || isUpdating}
             >
-              {isLoading ? 'Atualizando...' : 'Atualizar Agora'}
+              {isLoading || isUpdating ? 'Atualizando...' : 'Atualizar Agora'}
             </button>
           </div>
         </div>
@@ -216,8 +146,9 @@ export default function Sensores() {
             <div className={styles.noData}>
               <div className={styles.noDataIcon}>📊</div>
               <h3>Aguardando dados do ESP32...</h3>
-              <p>Conectando ao ESP32 em {ESP32_IP}</p>
+              <p>Conectando ao ESP32 em {config.ESP32_IP}</p>
               <p>Verifique a conexão e o endereço IP do dispositivo</p>
+              {lastError && <p style={{color: 'var(--error-color)', marginTop: '1rem'}}>Erro: {lastError}</p>}
             </div>
           )}
         </div>
