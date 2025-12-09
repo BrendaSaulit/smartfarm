@@ -140,33 +140,18 @@ export default function Indicadores() {
       <div className={styles.connectionCard}>
         <div className={styles.connectionInfo}>
           <h3><FiGlobe /> Conexão ESP32</h3>
-          <p><strong>Endereço IP:</strong> {config.ESP32_IP}</p>
+          <p><strong>Endereço IP:</strong> {config?.ip}</p>
           <p><strong>Status:</strong> 
             <span className={connectionStatus === 'Conectado' ? styles.statusGood : styles.statusBad}>
               {connectionStatus}
             </span>
           </p>
           <p><strong>Fonte de Dados:</strong> {dataSource}</p>
-          <p><strong>Atualização:</strong> A cada {config.UPDATE_INTERVAL / 1000} segundos</p>
-          {lastError && (
+          {lastError && connectionStatus != 'Conectado' &&(
             <p style={{color: 'var(--error-color)', fontSize: '0.85rem', marginTop: '0.5rem'}}>
               <strong>Erro:</strong> {lastError}
             </p>
           )}
-        </div>
-        
-        <div className={styles.connectionActions}>
-          <button 
-            onClick={handleManualUpdate} 
-            className={styles.refreshButton}
-            disabled={isUpdating || isLoading}
-          >
-            <FiRefreshCw style={{ marginRight: 6 }} /> 
-            {isUpdating || isLoading ? 'Atualizando...' : 'Atualizar Agora'}
-          </button>
-          <span className={styles.updateInfo}>
-            {isLoading ? 'Conectando aos sensores...' : 'Dados em tempo real'}
-          </span>
         </div>
       </div>
 
@@ -177,16 +162,9 @@ export default function Indicadores() {
           <div className={styles.chartControls}>
             <span className={styles.chartInfo}>
               {dataSource === 'ESP32 (Real)' 
-                ? `Dados em tempo real do ESP32 | Atualização: ${config.UPDATE_INTERVAL / 1000}s` 
-                : `Dados simulados para demonstração | Atualização: ${config.UPDATE_INTERVAL / 1000}s`}
+                ? `Dados em tempo real do ESP32 | Atualização: 2s` 
+                : `Dados simulados para demonstração | Atualização: 2s`}
             </span>
-            <button 
-              onClick={handleManualUpdate} 
-              className={styles.refreshBtn}
-              disabled={isLoading || isUpdating}
-            >
-              {isLoading || isUpdating ? 'Atualizando...' : 'Atualizar Agora'}
-            </button>
           </div>
         </div>
         
