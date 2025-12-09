@@ -22,16 +22,17 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: bold;
   color: var(--primary-color);
   text-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
   white-space: nowrap;
-  margin-right: 16px; /* afasta da Home */
+  margin-right: 16px;
 }
 
 .logoIcon {
-  font-size: 1.8rem;
+  font-size: 1.4rem;
+  color: #e7e7e7;
 }
 
 .logoText {
@@ -74,10 +75,9 @@
 }
 
 .navIcon,
-.logoIcon,
 .userIcon {
-  font-size: 1.6rem;
-  color: #e7e7e7; /* cinza */
+  font-size: 1rem;
+  color: #9ca3af;
 }
 
 .navLink:hover .navIcon,
@@ -88,7 +88,7 @@
 
 .navLabel {
   font-weight: 500;
-  font-size: 1.05rem; /* antes era menor */
+  font-size: 0.95rem;
 }
 
 /* Seção do usuário */

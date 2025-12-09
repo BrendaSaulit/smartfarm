@@ -1,4 +1,4 @@
-import { FiHome, FiWifi, FiTool, FiActivity, FiFileText, FiUser, FiLogOut, FiLeaf } from 'react-icons/fi';
+import { FiHome, FiWifi, FiTool, FiActivity, FiFileText, FiUser, FiLogOut, FiLeaf, FiLogIn } from 'react-icons/fi';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
@@ -18,8 +18,8 @@ export default function NavBar() {
     { path: '/sensores', label: 'Sensores', Icon: FiWifi },
     { path: '/atuadores', label: 'Atuadores', Icon: FiTool },
     { path: '/indicadores', label: 'Indicadores', Icon: FiActivity },
-    { path: '/logs', label: 'Logs', Icon: FiFileText },
     { path: '/contato', label: 'Contato/CV', Icon: FiUser },
+    { path: '/login', label: 'Entrar', Icon: FiLogIn },
   ];
 
   const handleLogout = () => {
