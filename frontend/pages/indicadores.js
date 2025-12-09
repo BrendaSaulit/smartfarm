@@ -4,38 +4,47 @@ import Link from 'next/link';
 import LineChart from '../components/LineChart';
 import styles from '../styles/indicadores.module.css';
 import { useESP32 } from '../contexts/ESP32Context';
+import {
+  FiActivity,
+  FiGlobe,
+  FiRefreshCw, 
+  FiBarChart2,
+  FiZap,
+  FiSun,
+  FiWind,
+  FiDroplet,
+  FiArrowLeft,
+  FiArrowRight,
+} from 'react-icons/fi';
+import { FaApple } from 'react-icons/fa';
 
 export default function Indicadores() {
   const router = useRouter();
   
-  // ===== USANDO O CONTEXTO ESP32 =====
   const { 
-    sensorData,           // dados atuais dos sensores
-    sensorHistory,        // histórico para o gráfico (array com últimas 20 leituras)
-    connectionStatus,     // 'Conectado' ou 'Desconectado'
-    dataSource,           // 'ESP32 (Real)' ou 'Simulação (Demo)'
-    lastUpdate,           // timestamp da última atualização
-    lastError,            // último erro capturado
-    isLoading,            // estado de carregamento
-    fetchSensorData,      // função manual para forçar atualização
-    config,               // configuração (ESP32_IP)
-    sendCommand,          // função para enviar comandos aos atuadores
-    isSendingCommand      // estado de envio de comando
+    sensorData,
+    sensorHistory,
+    connectionStatus,
+    dataSource,
+    lastUpdate,
+    lastError,
+    isLoading,
+    fetchSensorData,
+    config,
+    sendCommand,
+    isSendingCommand
   } = useESP32();
 
-  // Estado local apenas para controle de UI (não duplica lógica de conexão)
   const [isUpdating, setIsUpdating] = useState(false);
   const [lastCommand, setLastCommand] = useState(null);
   const [localCommandStatus, setLocalCommandStatus] = useState('Pronto');
 
-  // Função para atualizar manualmente (chama o contexto)
   const handleManualUpdate = async () => {
     setIsUpdating(true);
     await fetchSensorData();
     setTimeout(() => setIsUpdating(false), 500);
   };
 
-  // ===== FUNÇÃO PARA ENVIAR COMANDOS =====
   const sendCmd = async (cmd) => {
     if (isSendingCommand) return;
     
@@ -53,7 +62,6 @@ export default function Indicadores() {
       
       setLocalCommandStatus('Comando enviado com sucesso!');
       
-      // Reset do status após 2 segundos
       setTimeout(() => {
         setLocalCommandStatus('Pronto');
       }, 2000);
@@ -75,7 +83,6 @@ export default function Indicadores() {
     }
   };
 
-  // ===== PREPARAÇÃO DOS DADOS PARA O GRÁFICO =====
   const chartData = {
     labels: sensorHistory.map(item => item.timestamp.split(':').slice(0, 2).join(':')),
     datasets: [
@@ -115,7 +122,7 @@ export default function Indicadores() {
             ← Voltar
           </button>
           <h1 className={styles.title}>
-            <span className={styles.titleIcon}>📡</span>
+            <span className={styles.titleIcon}><FiActivity /></span>
             Indicadores
           </h1>
         </div>
@@ -135,7 +142,7 @@ export default function Indicadores() {
       {/* Status da Conexão */}
       <div className={styles.connectionCard}>
         <div className={styles.connectionInfo}>
-          <h3>🌐 Conexão ESP32</h3>
+          <h3><FiGlobe /> Conexão ESP32</h3>
           <p><strong>Endereço IP:</strong> {config.ESP32_IP}</p>
           <p><strong>Status:</strong> 
             <span className={connectionStatus === 'Conectado' ? styles.statusGood : styles.statusBad}>
@@ -157,7 +164,8 @@ export default function Indicadores() {
             className={styles.refreshButton}
             disabled={isUpdating || isLoading}
           >
-            {isUpdating || isLoading ? '🔄 Atualizando...' : '🔄 Atualizar Agora'}
+            <FiRefreshCw style={{ marginRight: 6 }} /> 
+            {isUpdating || isLoading ? 'Atualizando...' : 'Atualizar Agora'}
           </button>
           <span className={styles.updateInfo}>
             {isLoading ? 'Conectando aos sensores...' : 'Dados em tempo real'}
@@ -165,10 +173,10 @@ export default function Indicadores() {
         </div>
       </div>
 
-      {/* ====== GRÁFICO ====== */}
+      {/* Gráfico */}
       <div className={styles.chartSection}>
         <div className={styles.sectionHeader}>
-          <h2>📈 Evolução Temporal dos Sensores</h2>
+          <h2><FiBarChart2 /> Evolução Temporal dos Sensores</h2>
           <div className={styles.chartControls}>
             <span className={styles.chartInfo}>
               {dataSource === 'ESP32 (Real)' 
@@ -190,7 +198,7 @@ export default function Indicadores() {
             <LineChart data={chartData} />
           ) : (
             <div className={styles.noData}>
-              <div className={styles.noDataIcon}>📊</div>
+              <div className={styles.noDataIcon}><FiBarChart2 /></div>
               <h3>Aguardando dados do ESP32...</h3>
               <p>Conectando ao ESP32 em {config.ESP32_IP}</p>
               <p>Verifique a conexão e o endereço IP do dispositivo</p>
@@ -215,10 +223,10 @@ export default function Indicadores() {
         </div>
       </div>
 
-      {/* ====== CONTROLES RÁPIDOS ====== */}
+      {/* Controles Rápidos */}
       <div className={styles.section}>
         <h2 className={styles.sectionTitle}>
-          <span className={styles.sectionIcon}>⚡</span>
+          <span className={styles.sectionIcon}><FiZap /></span>
           Controles Rápidos
         </h2>
 
@@ -229,7 +237,7 @@ export default function Indicadores() {
             style={{ backgroundColor: '#ffd166' }}
             disabled={isSendingCommand}
           >
-            <span className={styles.quickIcon}>💡</span>
+            <span className={styles.quickIcon}><FiSun /></span>
             LED
           </button>
 
@@ -239,7 +247,7 @@ export default function Indicadores() {
             style={{ backgroundColor: '#4ecdc4' }}
             disabled={isSendingCommand}
           >
-            <span className={styles.quickIcon}>🌀</span>
+            <span className={styles.quickIcon}><FiWind /></span>
             Ventilador
           </button>
 
@@ -249,7 +257,7 @@ export default function Indicadores() {
             style={{ backgroundColor: '#06d6a0' }}
             disabled={isSendingCommand}
           >
-            <span className={styles.quickIcon}>🥕</span>
+            <span className={styles.quickIcon}><FaApple /></span>
             Alimentar
           </button>
 
@@ -259,7 +267,7 @@ export default function Indicadores() {
             style={{ backgroundColor: '#118ab2' }}
             disabled={isSendingCommand}
           >
-            <span className={styles.quickIcon}>💧</span>
+            <span className={styles.quickIcon}><FiDroplet /></span>
             Regar
           </button>
         </div>
@@ -280,12 +288,12 @@ export default function Indicadores() {
       {/* Navegação - Footer */}
       <div className={styles.navigation}>
         <Link href="/atuadores" className={styles.navButton}>
-          <span className={styles.navIcon}>←</span>
+          <span className={styles.navIcon}><FiArrowLeft /></span>
           Atuadores
         </Link>
         <Link href="/contato" className={styles.navButton}>
           Contato/CV
-          <span className={styles.navIcon}>→</span>
+          <span className={styles.navIcon}><FiArrowRight /></span>
         </Link>
       </div>
     </div>

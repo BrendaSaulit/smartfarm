@@ -3,11 +3,30 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useESP32 } from '../contexts/ESP32Context';
 import styles from '../styles/atuadores.module.css';
+import {
+  FiTool,
+  FiGlobe,
+  FiCpu,
+  FiThermometer,
+  FiLayers,
+  FiDroplet,
+  FiSun,
+  FiWind,
+  FiZap,
+  FiList,
+  FiCheckCircle,
+  FiXCircle,
+  FiTrash,
+  FiInbox,
+  FiSettings,
+  FiArrowLeft,
+  FiArrowRight,
+} from 'react-icons/fi';
+import { FaApple } from 'react-icons/fa';
 
 export default function Atuador() {
   const router = useRouter();
   
-  // Usando o contexto ESP32 completo
   const {
     sensorData,
     connectionStatus,
@@ -18,12 +37,10 @@ export default function Atuador() {
     lastUpdate
   } = useESP32();
 
-  // Estados específicos da página de atuadores
   const [lastCommand, setLastCommand] = useState(null);
   const [commandHistory, setCommandHistory] = useState([]);
   const [localCommandStatus, setLocalCommandStatus] = useState('Pronto');
 
-  // Função para enviar comandos aos atuadores (usando função do contexto)
   const sendCmd = async (cmd) => {
     if (isSendingCommand) return;
     
@@ -39,7 +56,6 @@ export default function Atuador() {
         status: 'success'
       });
       
-      // Adiciona ao histórico (mantém apenas últimos 10)
       setCommandHistory(prev => [
         {
           id: Date.now(),
@@ -52,7 +68,6 @@ export default function Atuador() {
       
       setLocalCommandStatus('Comando enviado com sucesso!');
       
-      // Reset do status após 2 segundos
       setTimeout(() => {
         setLocalCommandStatus('Pronto');
       }, 2000);
@@ -66,7 +81,6 @@ export default function Atuador() {
         status: 'error'
       });
       
-      // Adiciona erro ao histórico
       setCommandHistory(prev => [
         {
           id: Date.now(),
@@ -86,13 +100,12 @@ export default function Atuador() {
     }
   };
 
-  // Lista de atuadores
   const actuators = [
     { 
       id: 'LED', 
       name: 'Controle de LED', 
       description: 'Liga/Desliga LEDs da estufa',
-      icon: '💡', 
+      Icon: FiSun, 
       color: '#ffd166',
       cmd: 'LED'
     },
@@ -100,7 +113,7 @@ export default function Atuador() {
       id: 'FAN', 
       name: 'Ventilador', 
       description: 'Controle do sistema de ventilação',
-      icon: '🌀', 
+      Icon: FiWind, 
       color: '#4ecdc4',
       cmd: 'FAN'
     },
@@ -108,7 +121,7 @@ export default function Atuador() {
       id: 'FEED', 
       name: 'Sistema de Alimentação', 
       description: 'Aciona o dispensador de ração',
-      icon: '🥕', 
+      Icon: FaApple, // ← Trocado para FaApple
       color: '#06d6a0',
       cmd: 'FEED'
     },
@@ -116,7 +129,7 @@ export default function Atuador() {
       id: 'WATER', 
       name: 'Sistema de Irrigação', 
       description: 'Aciona a bomba de água',
-      icon: '💧', 
+      Icon: FiDroplet, 
       color: '#118ab2',
       cmd: 'WATER'
     },
@@ -124,59 +137,52 @@ export default function Atuador() {
       id: 'AUTO', 
       name: 'Modo Automático', 
       description: 'Ativa o modo automático',
-      icon: '🤖', 
+      Icon: FiCpu, 
       color: '#9d4edd',
       cmd: 'AUTO'
     }
   ];
 
-  // Recomendações baseadas em sensores
   const getRecommendation = () => {
     if (!sensorData) return "Aguardando dados dos sensores...";
     
     const recommendations = [];
     
-    // 🌡️ Temperatura
     if (sensorData.temperature > 28) {
-      recommendations.push("🌡️ Temperatura alta - Ativar ventilador");
+      recommendations.push("Temperatura alta - Ativar ventilador");
     } else if (sensorData.temperature < 20) {
-      recommendations.push("🌡️ Temperatura baixa - Aquecer ambiente");
+      recommendations.push("Temperatura baixa - Aquecer ambiente");
     }
     
-    // 🌱 Umidade do solo
     if (sensorData.soil < 30) {
-      recommendations.push("🌱 Solo seco - Ativar irrigação");
+      recommendations.push("Solo seco - Ativar irrigação");
     } else if (sensorData.soil > 70) {
-      recommendations.push("🌱 Solo muito úmido - Parar irrigação");
+      recommendations.push("Solo muito úmido - Parar irrigação");
     }
     
-    // 🚰 Nível de água
     if (sensorData.water < 20) {
-      recommendations.push("🚰 Nível de água baixo - Verificar reservatório");
+      recommendations.push("Nível de água baixo - Verificar reservatório");
     }
     
-    // ☀️ Luminosidade (usando light_normalized se disponível)
     const lightValue = sensorData.light_normalized || sensorData.light;
     if (lightValue < 30) {
-      recommendations.push("☀️ Pouca luminosidade - Ativar LEDs");
+      recommendations.push("Pouca luminosidade - Ativar LEDs");
     } else if (lightValue > 80) {
-      recommendations.push("☀️ Luminosidade excessiva - Reduzir iluminação");
+      recommendations.push("Luminosidade excessiva - Reduzir iluminação");
     }
     
-    // 💨 Umidade do ar
     if (sensorData.humidity !== undefined) {
       if (sensorData.humidity > 70) {
-        recommendations.push("💨 Umidade alta - Ventilar ambiente");
+        recommendations.push("Umidade alta - Ventilar ambiente");
       } else if (sensorData.humidity < 40) {
-        recommendations.push("💨 Umidade baixa - Umidificar ambiente");
+        recommendations.push("Umidade baixa - Umidificar ambiente");
       }
     }
     
     return recommendations.length > 0 
       ? recommendations.join(" | ")
-      : "✅ Todos os parâmetros dentro do ideal";
+      : "Todos os parâmetros dentro do ideal";
   };
-
 
   return (
     <div className={styles.container}>
@@ -190,7 +196,7 @@ export default function Atuador() {
             ← Voltar
           </button>
           <h1 className={styles.title}>
-            <span className={styles.titleIcon}>⚙️</span>
+            <span className={styles.titleIcon}><FiTool /></span>
             Controle de Atuadores
           </h1>
         </div>
@@ -214,7 +220,7 @@ export default function Atuador() {
       {/* Status da Conexão */}
       <div className={styles.connectionCard}>
         <div className={styles.connectionInfo}>
-          <h3>🌐 Controle do ESP32</h3>
+          <h3><FiGlobe /> Controle do ESP32</h3>
           <p><strong>Endereço IP:</strong> {config?.ip}</p>
           <p><strong>Status ESP32:</strong> 
             <span className={connectionStatus === 'Conectado' ? styles.statusGood : styles.statusBad}>
@@ -232,27 +238,27 @@ export default function Atuador() {
       <div className={styles.recommendationSection}>
         <div className={styles.recommendationCard}>
           <div className={styles.recommendationHeader}>
-            <span className={styles.recommendationIcon}>🤖</span>
+            <span className={styles.recommendationIcon}><FiCpu /></span>
             <h3>Recomendações Automáticas</h3>
           </div>
           <div className={styles.recommendationContent}>
             <p>{getRecommendation()}</p>
             <div className={styles.sensorStatus}>
               <span className={styles.sensorStatusItem}>
-                🌡️ {sensorData?.temperature?.toFixed(1) || '--'}°C
+                <FiThermometer /> {sensorData?.temperature?.toFixed(1) || '--'}°C
               </span>
               <span className={styles.sensorStatusItem}>
-                🌱 {sensorData?.soil?.toFixed(0) || '--'}%
+                <FiLayers /> {sensorData?.soil?.toFixed(0) || '--'}%
               </span>
               <span className={styles.sensorStatusItem}>
-                🚰 {sensorData?.water?.toFixed(0) || '--'}%
+                <FiDroplet /> {sensorData?.water?.toFixed(0) || '--'}%
               </span>
               <span className={styles.sensorStatusItem}>
-                ☀️ {(sensorData?.light_normalized || sensorData?.light)?.toFixed(0) || '--'}%
+                <FiSun /> {(sensorData?.light_normalized || sensorData?.light)?.toFixed(0) || '--'}%
               </span>
               {sensorData?.humidity !== undefined && (
                 <span className={styles.sensorStatusItem}>
-                  💨 {sensorData.humidity.toFixed(0)}%
+                  <FiWind /> {sensorData.humidity.toFixed(0)}%
                 </span>
               )}
             </div>
@@ -263,7 +269,7 @@ export default function Atuador() {
       {/* Grid de Atuadores */}
       <div className={styles.section}>
         <h2 className={styles.sectionTitle}>
-          <span className={styles.sectionIcon}>🎮</span>
+          <span className={styles.sectionIcon}><FiZap /></span>
           Controle Manual dos Atuadores
         </h2>
         <p className={styles.sectionDescription}>
@@ -277,7 +283,7 @@ export default function Atuador() {
                 className={styles.actuatorHeader}
                 style={{ borderLeftColor: actuator.color }}
               >
-                <div className={styles.actuatorIcon}>{actuator.icon}</div>
+                <div className={styles.actuatorIcon}>{actuator.Icon ? <actuator.Icon /> : null}</div>
                 <div className={styles.actuatorInfo}>
                   <h3 className={styles.actuatorName}>{actuator.name}</h3>
                   <span className={styles.actuatorCmd}>
@@ -293,7 +299,6 @@ export default function Atuador() {
                 {actuator.description}
               </p>
               
-              {/* Botão Único - Removido "Confirmar e Enviar" */}
               <div className={styles.actuatorActions}>
                 <button 
                   onClick={() => sendCmd(actuator.cmd)}
@@ -301,7 +306,7 @@ export default function Atuador() {
                   style={{ backgroundColor: actuator.color }}
                   disabled={isSendingCommand}
                 >
-                  {isSendingCommand ? '⏳ Enviando...' : '▶️ Executar Comando'}
+                  {isSendingCommand ? 'Enviando...' : 'Executar Comando'}
                 </button>
               </div>
               
@@ -321,7 +326,7 @@ export default function Atuador() {
       {/* Controles Rápidos */}
       <div className={styles.section}>
         <h2 className={styles.sectionTitle}>
-          <span className={styles.sectionIcon}>⚡</span>
+          <span className={styles.sectionIcon}><FiZap /></span>
           Controles Rápidos
         </h2>
         
@@ -332,7 +337,7 @@ export default function Atuador() {
             style={{ backgroundColor: '#ffd166' }}
             disabled={isSendingCommand}
           >
-            <span className={styles.quickIcon}>💡</span>
+            <span className={styles.quickIcon}><FiSun /></span>
             LED
           </button>
           
@@ -342,7 +347,7 @@ export default function Atuador() {
             style={{ backgroundColor: '#4ecdc4' }}
             disabled={isSendingCommand}
           >
-            <span className={styles.quickIcon}>🌀</span>
+            <span className={styles.quickIcon}><FiWind /></span>
             Ventilador
           </button>
           
@@ -352,7 +357,7 @@ export default function Atuador() {
             style={{ backgroundColor: '#06d6a0' }}
             disabled={isSendingCommand}
           >
-            <span className={styles.quickIcon}>🥕</span>
+            <span className={styles.quickIcon}><FaApple /></span>
             Alimentar
           </button>
           
@@ -362,17 +367,16 @@ export default function Atuador() {
             style={{ backgroundColor: '#118ab2' }}
             disabled={isSendingCommand}
           >
-            <span className={styles.quickIcon}>💧</span>
+            <span className={styles.quickIcon}><FiDroplet /></span>
             Regar
           </button>
-          
         </div>
       </div>
 
       {/* Histórico de Comandos */}
       <div className={styles.section}>
         <h2 className={styles.sectionTitle}>
-          <span className={styles.sectionIcon}>📋</span>
+          <span className={styles.sectionIcon}><FiList /></span>
           Histórico de Comandos
         </h2>
         
@@ -383,7 +387,7 @@ export default function Atuador() {
               onClick={() => setCommandHistory([])}
               className={styles.clearButton}
             >
-              🗑️ Limpar Histórico
+              <FiTrash style={{ marginRight: 6 }} /> Limpar Histórico
             </button>
           </div>
           
@@ -394,7 +398,7 @@ export default function Atuador() {
                   <div key={item.id} className={`${styles.historyItem} ${styles[item.status]}`}>
                     <div className={styles.historyCommand}>
                       <span className={styles.historyIcon}>
-                        {item.status === 'success' ? '✅' : '❌'}
+                        {item.status === 'success' ? <FiCheckCircle /> : <FiXCircle />}
                       </span>
                       <code className={styles.historyCmd}>{item.command}</code>
                     </div>
@@ -409,7 +413,7 @@ export default function Atuador() {
               </div>
             ) : (
               <div className={styles.noHistory}>
-                <div className={styles.noHistoryIcon}>📭</div>
+                <div className={styles.noHistoryIcon}><FiInbox /></div>
                 <h3>Nenhum comando enviado ainda</h3>
                 <p>Os comandos enviados aparecerão aqui</p>
               </div>
@@ -433,7 +437,7 @@ export default function Atuador() {
       {/* Informações Técnicas */}
       <div className={styles.infoSection}>
         <div className={styles.infoCard}>
-          <h3>🔧 Como Funciona</h3>
+          <h3><FiSettings /> Como Funciona</h3>
           <p>1. Cada botão envia um comando HTTP GET para o ESP32</p>
           <p>2. O ESP32 processa o comando e aciona o atuador correspondente</p>
           <p>3. O sistema aguarda confirmação da execução</p>
@@ -444,12 +448,12 @@ export default function Atuador() {
       {/* Navegação */}
       <div className={styles.navigation}>
         <Link href="/sensores" className={styles.navButton}>
-          <span className={styles.navIcon}>←</span>
+          <span className={styles.navIcon}><FiArrowLeft /></span>
           Sensores
         </Link>
-        <Link href="/" className={styles.navButton}>
+        <Link href="/indicadores" className={styles.navButton}>
           Indicadores
-          <span className={styles.navIcon}>→</span>
+          <span className={styles.navIcon}><FiArrowRight /></span>
         </Link>
       </div>
     </div>

@@ -2,6 +2,17 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import styles from '../styles/sensores.module.css';
 import { useESP32 } from '../contexts/ESP32Context';
+import {
+  FiWifi,
+  FiBarChart2,
+  FiClipboard,
+  FiThermometer,
+  FiDroplet,
+  FiCloudRain,
+  FiSun,
+  FiLayers,
+  FiGlobe,
+} from 'react-icons/fi';
 
 export default function Sensores() {
   const router = useRouter();
@@ -67,7 +78,7 @@ export default function Sensores() {
       name: 'Temperatura do Ambiente',
       value: sensorData?.temperature,
       unit: '°C',
-      icon: '🌡️',
+      icon: FiThermometer,
       color: '#ff6b6b',
       status: getTemperatureStatus(sensorData?.temperature),
       ideal: '20-30°C'
@@ -77,7 +88,7 @@ export default function Sensores() {
       name: 'Umidade do Ambiente',
       value: sensorData?.humidity,
       unit: '%',
-      icon: '💨',
+      icon: FiDroplet,
       color: '#4ecdc4',
       status: getHumidityStatus(sensorData?.humidity),
       ideal: '40-60%'
@@ -87,7 +98,7 @@ export default function Sensores() {
       name: 'Vapor/Chuva',
       value: sensorData?.steam,
       unit: '%',
-      icon: '☁️',
+      icon: FiCloudRain,
       color: '#45b7d1',
       status: getSteamStatus(sensorData?.steam),
       ideal: '0-20%'
@@ -97,7 +108,7 @@ export default function Sensores() {
       name: 'Luz Ambiente',
       value: sensorData?.light,
       unit: '%',
-      icon: '☀️',
+      icon: FiSun,
       color: '#ffd166',
       status: getLightStatus(sensorData?.light),
       ideal: '50-80%'
@@ -107,7 +118,7 @@ export default function Sensores() {
       name: 'Umidade do Solo',
       value: sensorData?.soil,
       unit: '%',
-      icon: '🌱',
+      icon: FiLayers,
       color: '#06d6a0',
       status: getSoilStatus(sensorData?.soil),
       ideal: '40-60%'
@@ -117,7 +128,7 @@ export default function Sensores() {
       name: 'Nível da Água',
       value: sensorData?.water,
       unit: '%',
-      icon: '🚰',
+      icon: FiDroplet, // ícone seguro
       color: '#118ab2',
       status: getWaterStatus(sensorData?.water),
       ideal: 'acima de 20%'
@@ -136,7 +147,7 @@ export default function Sensores() {
             ← Voltar
           </button>
           <h1 className={styles.title}>
-            <span className={styles.titleIcon}>📡</span>
+            <span className={styles.titleIcon}><FiWifi /></span>
             Monitoramento de Sensores
           </h1>
         </div>
@@ -155,7 +166,7 @@ export default function Sensores() {
       {/* Status da Conexão */}
       <div className={styles.connectionCard}>
         <div className={styles.connectionInfo}>
-          <h3>🌐 Conexão ESP32</h3>
+          <h3><FiGlobe /> Conexão ESP32</h3>
           <p><strong>Endereço IP:</strong> {config?.ip}</p>
           <p><strong>Status da conexão:</strong> 
             <span className={connectionStatus === 'Conectado' ? styles.statusGood : styles.statusBad}>
@@ -166,10 +177,10 @@ export default function Sensores() {
         </div>
       </div>
 
-      {/* Grid de Sensores - COM MESMO COMPORTAMENTO DO index.js */}
+      {/* Grid de Sensores*/}
       <div className={styles.section}>
         <h2 className={styles.sectionTitle}>
-          <span className={styles.sectionIcon}>📊</span>
+          <span className={styles.sectionIcon}><FiBarChart2 /></span>
           Leitura dos Sensores
         </h2>
         
@@ -180,7 +191,7 @@ export default function Sensores() {
                 className={styles.sensorHeader}
                 style={{ borderLeftColor: sensor.color }}
               >
-                <div className={styles.sensorIcon}>{sensor.icon}</div>
+                <div className={styles.sensorIcon}>{sensor.icon ? <sensor.icon /> : null}</div>
                 <h3 className={styles.sensorName}>{sensor.name}</h3>
                 <span className={`${styles.sensorBadge} ${styles[sensor.status]}`}>
                   {sensor.status === 'high' ? 'ALTO' : 
@@ -228,7 +239,7 @@ export default function Sensores() {
       {/* Visualização Detalhada */}
       <div className={styles.section}>
         <h2 className={styles.sectionTitle}>
-          <span className={styles.sectionIcon}>📋</span>
+          <span className={styles.sectionIcon}><FiClipboard /></span>
           Dados em Texto
         </h2>
         
@@ -269,7 +280,7 @@ Nível da Água: ${sensorData.water?.toFixed(0) || '--'} %`}
       </div>
 
       {/* Rodapé */}
-      {/* Navegação - NOVO (igual a atuadores) */}
+      {/* Navegação*/}
       <div className={styles.navigation}>
         <Link href="/" className={styles.navButton}>
           <span className={styles.navIcon}>←</span>

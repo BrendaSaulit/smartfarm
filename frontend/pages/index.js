@@ -4,6 +4,21 @@ import { useAuth } from '../contexts/AuthContext';
 import LineChart from '../components/LineChart';
 import styles from '../styles/home.module.css';
 import { useESP32 } from '../contexts/ESP32Context';
+import {
+  FiPower,
+  FiRefreshCw,
+  FiThermometer,
+  FiLayers,
+  FiSun,
+  FiDroplet,
+  FiActivity,
+  FiTool,
+  FiBarChart2,
+  FiFileText,
+  FiNavigation,
+  FiGlobe, // adicionado
+  FiInfo,  // adicionado
+} from 'react-icons/fi';
 
 export default function Home() {
   const { user } = useAuth();
@@ -51,38 +66,10 @@ export default function Home() {
 
   // Cards de navegação (mantendo igual)
   const navCards = [
-    { 
-      id: 1, 
-      title: 'Sensores', 
-      path: '/sensores', 
-      icon: '📡', 
-      description: 'Monitoramento detalhado de todos os sensores',
-      color: '#ff6b6b'
-    },
-    { 
-      id: 2, 
-      title: 'Atuadores', 
-      path: '/atuadores', 
-      icon: '⚙️', 
-      description: 'Controle de dispositivos e automação',
-      color: '#4ecdc4'
-    },
-    { 
-      id: 3, 
-      title: 'Indicadores', 
-      path: '/indicadores', 
-      icon: '📊', 
-      description: 'Métricas e análises avançadas',
-      color: '#45b7d1'
-    },
-    { 
-      id: 4, 
-      title: 'Logs', 
-      path: '/logs', 
-      icon: '📋', 
-      description: 'Histórico de eventos e atividades',
-      color: '#96ceb4'
-    },
+    { id: 1, title: 'Sensores',    path: '/sensores',    Icon: FiActivity,  description: 'Monitoramento detalhado de todos os sensores', color: '#ff6b6b' },
+    { id: 2, title: 'Atuadores',   path: '/atuadores',   Icon: FiTool,      description: 'Controle de dispositivos e automação',         color: '#4ecdc4' },
+    { id: 3, title: 'Indicadores', path: '/indicadores', Icon: FiBarChart2, description: 'Métricas e análises avançadas',                color: '#45b7d1' },
+    { id: 4, title: 'Logs',        path: '/logs',        Icon: FiFileText,  description: 'Histórico de eventos e atividades',            color: '#96ceb4' },
   ];
 
   // Prepara dados para o gráfico (mantendo igual)
@@ -128,7 +115,7 @@ export default function Home() {
         <div className={`${styles.modeCard} ${dataSource === 'ESP32 (Real)' ? styles.modeReal : styles.modeSimulated}`}>
           <div className={styles.modeHeader}>
             <span className={styles.modeIcon}>
-              {dataSource === 'ESP32 (Real)' ? '🔌' : '🔄'}
+              {dataSource === 'ESP32 (Real)' ? <FiPower /> : <FiRefreshCw />}
             </span>
             <h3>Modo de Operação</h3>
             <span className={styles.modeBadge}>
@@ -156,7 +143,7 @@ export default function Home() {
       <div className={styles.statsGrid}>
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
-            <span className={styles.statIcon}>🌡️</span>
+            <span className={styles.statIcon}><FiThermometer /></span>
             <h3>Temperatura</h3>
             <span className={`${styles.statBadge} ${
               getTemperatureStatus(sensorData?.temperature) === 'high' ? styles.high : 
@@ -185,7 +172,7 @@ export default function Home() {
 
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
-            <span className={styles.statIcon}>💧</span>
+            <span className={styles.statIcon}><FiLayers /></span>
             <h3>Umidade do Solo</h3>
             <span className={`${styles.statBadge} ${
               getSoilStatus(sensorData?.soil) === 'high' ? styles.high : 
@@ -214,7 +201,7 @@ export default function Home() {
 
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
-            <span className={styles.statIcon}>☀️</span>
+            <span className={styles.statIcon}><FiSun /></span>
             <h3>Luminosidade</h3>
             <span className={`${styles.statBadge} ${
               getLightStatus(sensorData?.light) === 'high' ? styles.high : 
@@ -243,7 +230,7 @@ export default function Home() {
 
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
-            <span className={styles.statIcon}>🚰</span>
+            <span className={styles.statIcon}><FiDroplet /></span>
             <h3>Nível da Água</h3>
             <span className={`${styles.statBadge} ${
               getWaterStatus(sensorData?.water) === 'low' ? styles.low : styles.normal
@@ -311,7 +298,7 @@ export default function Home() {
 
       {/* Cards de navegação - mantendo igual */}
       <div className={styles.navigationSection}>
-        <h2>🚀 Navegação Rápida</h2>
+        <h2><FiNavigation /> Navegação Rápida</h2>
         <div className={styles.navGrid}>
           {navCards.map((card) => (
             <Link key={card.id} href={card.path} className={styles.navCard}>
@@ -319,7 +306,7 @@ export default function Home() {
                 className={styles.navCardContent}
                 style={{ borderLeftColor: card.color }}
               >
-                <div className={styles.navCardIcon}>{card.icon}</div>
+                <div className={styles.navCardIcon}>{card.Icon ? <card.Icon /> : null}</div>
                 <h3 className={styles.navCardTitle}>{card.title}</h3>
                 <p className={styles.navCardDescription}>{card.description}</p>
                 <div className={styles.navCardArrow}>→</div>
@@ -332,7 +319,7 @@ export default function Home() {
       {/* Informações do sistema - ajustando para usar config?.ip */}
       <div className={styles.systemInfo}>
         <div className={styles.infoCard}>
-          <h3>🌐 Conexão ESP32</h3>
+          <h3><FiGlobe /> Conexão ESP32</h3>
           <p><strong>Endereço IP:</strong> {config?.ip}</p>
           <p><strong>Status:</strong> 
             <span className={`${connectionStatus === 'Conectado' ? styles.statusGood : styles.statusBad}`}>
@@ -343,7 +330,7 @@ export default function Home() {
         </div>
         
         <div className={styles.infoCard}>
-          <h3>📋 Informações do Sistema</h3>
+          <h3><FiInfo /> Informações do Sistema</h3>
           <p><strong>Usuário:</strong> {user ? user.username : 'demo_user'}</p>
           <p><strong>Sessão iniciada:</strong> {new Date().toLocaleDateString('pt-BR')}</p>
           <p><strong>Versão:</strong> Smart Farm v1.0.0</p>
