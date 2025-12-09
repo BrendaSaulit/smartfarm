@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import LineChart from '../components/LineChart';
 import styles from '../styles/indicadores.module.css';
 import { useESP32 } from '../contexts/ESP32Context';
@@ -276,6 +277,17 @@ export default function Indicadores() {
         )}
       </div>
 
+      {/* Navegação - Footer */}
+      <div className={styles.navigation}>
+        <Link href="/atuadores" className={styles.navButton}>
+          <span className={styles.navIcon}>←</span>
+          Atuadores
+        </Link>
+        <Link href="/contato" className={styles.navButton}>
+          Contato/CV
+          <span className={styles.navIcon}>→</span>
+        </Link>
+      </div>
     </div>
   );
 }

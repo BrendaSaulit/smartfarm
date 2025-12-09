@@ -1,4 +1,6 @@
+import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { FiHome } from 'react-icons/fi';
 import styles from '../styles/contato.module.css';
 
 // Dados dos desenvolvedores
@@ -10,6 +12,8 @@ const developers = [
 ];
 
 export default function Contato() {
+  const router = useRouter();
+
   return (
     <div className={styles.container}>
       {/* Seção Fale Conosco - Desenvolvedores */}
@@ -29,9 +33,9 @@ export default function Contato() {
               <div className={styles.devRole}>{dev.role}</div>
               
               <a
-                href={dev.cvPath} // Caminho estático
-                target="_blank" // Abertura em nova aba
-                rel="noopener noreferrer" // Prática de segurança
+                href={dev.cvPath}
+                target="_blank"
+                rel="noopener noreferrer"
                 className={styles.cvButton}
               >
                 Ver Currículo
@@ -41,16 +45,20 @@ export default function Contato() {
         </div>
       </div>
 
-      <div className={styles.chartSection}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h2 className={styles.chartTitle}>Desenvolvedores - Smart Farm</h2>
-          {/* Link para a Home (Index.js) */}
-          <Link href="/" className={styles.chartLink}>
-            Voltar para Home
-          </Link>
-        </div>
-      </div>
+      {/* Título sem container com borda */}
+      <h2 className={styles.chartTitle}>Desenvolvedores - Smart Farm</h2>
 
+      {/* Navegação - Footer (Indicadores e Voltar para Home) */}
+      <div className={styles.navigation}>
+        <Link href="/indicadores" className={styles.navButton}>
+          <span className={styles.navIcon}>←</span>
+          Indicadores
+        </Link>
+        <Link href="/" className={styles.navButton}>
+          Voltar para Home
+          <span className={styles.navIcon}><FiHome /></span>
+        </Link>
+      </div>
     </div>
   );
 }
