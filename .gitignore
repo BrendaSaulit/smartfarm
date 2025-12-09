@@ -1,92 +1,186 @@
 # ============================================
-#  GENERAL
+#  GENERAL / OS
 # ============================================
 .DS_Store
 Thumbs.db
-*.log
-logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-*.pid
-*.seed
-*.pid.lock
-
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.production.local
-.env.test.local
-
-# Build
-dist/
-build/
-out/
+*.swp
+*.swo
+*.swn
+*.bak
+*.tmp
+*.temp
 
 # ============================================
-#  NODE (backend + frontend)
+#  ENVIRONMENT VARIABLES
+# ============================================
+.env
+.env.*
+.env.local
+.env.development
+.env.production
+.env.test
+.env.staging
+.env.example  # Mas este pode ser commitado
+
+# ============================================
+#  NODE.JS / DEPENDENCIES
 # ============================================
 node_modules/
 frontend/node_modules/
 backend/node_modules/
 
-# npm
+# Package locks
 package-lock.json
-pnpm-lock.yaml
 yarn.lock
+pnpm-lock.yaml
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
 # ============================================
-#  NEXT.JS
+#  NEXT.JS / FRONTEND
 # ============================================
-.next/
 .next/
 .next/cache/
 .next/static/
+.next/build/
 
-# Output of Next build
+# Build outputs
 out/
+dist/
+build/
 
-# Next.js Typescript build info
+# TypeScript build info
 *.tsbuildinfo
 
-# Optional eslint cache
+# ESLint / Prettier cache
 .eslintcache
+.prettiercache
 
-# Jetbrains / VSCode
+# ============================================
+#  DATABASE / SQLITE (SECÇÃO ATUALIZADA)
+# ============================================
+# SQLite databases
+*.db
+smartfarm.db
+backend/smartfarm.db
+
+# SQLite temporary files
+*.db-journal
+*.db-wal
+*.db-shm
+*-journal
+*-wal
+*-shm
+
+# Database directories
+backend/data/
+data/
+db/
+
+# Backup files
+*.bak
+*.backup
+*.sql.bak
+
+# ============================================
+#  LOGS
+# ============================================
+*.log
+logs/
+backend/logs/
+frontend/logs/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Process IDs
+*.pid
+*.seed
+*.pid.lock
+
+# ============================================
+#  DEVELOPMENT TOOLS
+# ============================================
 .idea/
 .vscode/
+.vs/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
-# ============================================
-#  OS FILES
-# ============================================
-.DS_Store
-*.swp
-*.swo
+# JetBrains
+.idea/
+*.iml
+*.iws
 
-# ============================================
-#  SQLITE / DATABASE
-# ============================================
-backend/data/*.db
-backend/data/*.sqlite
-backend/data/*.sqlite3
+# Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 
 # ============================================
 #  DOCKER
 # ============================================
 docker-data/
 *.tar
+*.tar.gz
+docker-compose.override.yml
 
 # ============================================
-#  UPLOADS (caso tenha)
+#  UPLOADS / MEDIA
 # ============================================
 uploads/
 public/uploads/
+media/
+public/media/
+tmp/
+temp/
 
 # ============================================
-#  PLANTUML (se usar imagens geradas)
+#  TEST & COVERAGE
 # ============================================
+coverage/
+.nyc_output/
+*.lcov
+
+# ============================================
+#  DOCUMENTATION
+# ============================================
+docs/_build/
+docs/_static/
+docs/_templates/
+
+# PlantUML generated images (se usar)
 docs/UML/*.png
 docs/UML/*.svg
 docs/UML/*.pdf
+
+# ============================================
+#  SYSTEM
+# ============================================
+*.pid
+*.seed
+*.pid.lock
+*.tgz
+.cache/
+.parcel-cache/
+
+# ============================================
+#  SECRETS / SENSITIVE
+# ============================================
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+*.cer
+*.jks
+secrets/
+credentials/
+config/secret*.json

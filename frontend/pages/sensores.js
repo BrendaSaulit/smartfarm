@@ -1,154 +1,24 @@
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import styles from '../styles/sensores.module.css';
-
-// Reutilize a mesma configuração do ESP32
-const ESP32_IP = "http://10.106.33.1";
+import { useESP32 } from '../contexts/ESP32Context';
 
 export default function Sensores() {
   const router = useRouter();
-  const [sensorData, setSensorData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [connectionStatus, setConnectionStatus] = useState('Conectando...');
-  const [lastUpdate, setLastUpdate] = useState(null);
-  const [isUpdating, setIsUpdating] = useState(false);
+  
+  // Usando o contexto ESP32 - MESMO DO index.js!
+  const { 
+    sensorData,            // Dados reais OU simulados (fallback)
+    connectionStatus,      // 'Conectado' OU 'Desconectado'
+    dataSource,           // 'ESP32 (Real)' OU 'Simulação (Demo)'
+    lastUpdate,           // Timestamp da última atualização
+    lastError,            // Último erro (se houver)
+    isLoading,            // Estado de loading inicial (TRUE apenas na primeira conexão)
+    fetchSensorData,      // Função para atualização manual
+    config                // Configuração (inclui ESP32_IP)
+  } = useESP32();
 
-  // Função para buscar dados dos sensores
-  const updateSensors = async () => {
-    if (isUpdating) return;
-    
-    setIsUpdating(true);
-    setIsLoading(true);
-    
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 1500);
-      
-      const res = await fetch(`${ESP32_IP}/sensors`, { 
-        signal: controller.signal 
-      });
-      
-      clearTimeout(timeout);
-      
-      if (!res.ok) {
-        throw new Error("Falha ao obter dados dos sensores");
-      }
-      
-      const data = await res.json();
-      
-      // Normaliza a luminosidade (se necessário)
-      if (data.light !== undefined) {
-        data.light = normalizeLight(data.light);
-      }
-      
-      setSensorData(data);
-      setConnectionStatus('Conectado');
-      setLastUpdate(new Date().toLocaleTimeString());
-      
-    } catch (erro) {
-      console.error("Erro ao conectar com o ESP32:", erro);
-      setConnectionStatus('Desconectado');
-      
-      // Dados simulados para demonstração
-      const simulatedData = {
-        temperature: 24.8 + (Math.random() * 2 - 1),
-        humidity: 60 + (Math.random() * 10 - 5),
-        steam: 15 + (Math.random() * 10 - 5),
-        light: 70 + (Math.random() * 30 - 15),
-        soil: 45 + (Math.random() * 20 - 10),
-        water: 35 + (Math.random() * 20 - 10)
-      };
-      
-      setSensorData(simulatedData);
-      
-    } finally {
-      setIsLoading(false);
-      setIsUpdating(false);
-    }
-  };
-
-  // Função para normalizar luminosidade
-  const normalizeLight = (raw) => {
-    let light = Math.pow(raw / 4095.0, 0.6) * 100.0;
-    light = Math.round(light / 10) * 10;
-    return Math.min(100, Math.max(0, light));
-  };
-
-  // Configura atualização periódica
-  useEffect(() => {
-    updateSensors();
-    
-    const intervalId = setInterval(updateSensors, 2000);
-    
-    return () => clearInterval(intervalId);
-  }, []);
-
-  // Dados dos sensores para exibição
-  const sensors = [
-    {
-      id: 'temperature',
-      name: 'Temperatura do Ambiente',
-      value: sensorData?.temperature?.toFixed(1),
-      unit: '°C',
-      icon: '🌡️',
-      color: '#ff6b6b',
-      status: getTemperatureStatus(sensorData?.temperature),
-      ideal: '20-30°C'
-    },
-    {
-      id: 'humidity',
-      name: 'Umidade do Ambiente',
-      value: sensorData?.humidity?.toFixed(1),
-      unit: '%',
-      icon: '💨',
-      color: '#4ecdc4',
-      status: getHumidityStatus(sensorData?.humidity),
-      ideal: '40-60%'
-    },
-    {
-      id: 'steam',
-      name: 'Vapor/Chuva',
-      value: sensorData?.steam?.toFixed(1),
-      unit: '%',
-      icon: '☁️',
-      color: '#45b7d1',
-      status: getSteamStatus(sensorData?.steam),
-      ideal: '0-20%'
-    },
-    {
-      id: 'light',
-      name: 'Luz Ambiente',
-      value: sensorData?.light?.toFixed(0),
-      unit: '%',
-      icon: '☀️',
-      color: '#ffd166',
-      status: getLightStatus(sensorData?.light),
-      ideal: '50-80%'
-    },
-    {
-      id: 'soil',
-      name: 'Umidade do Solo',
-      value: sensorData?.soil?.toFixed(0),
-      unit: '%',
-      icon: '🌱',
-      color: '#06d6a0',
-      status: getSoilStatus(sensorData?.soil),
-      ideal: '40-60%'
-    },
-    {
-      id: 'water',
-      name: 'Nível da Água',
-      value: sensorData?.water?.toFixed(0),
-      unit: '%',
-      icon: '🚰',
-      color: '#118ab2',
-      status: getWaterStatus(sensorData?.water),
-      ideal: 'acima de 20%'
-    }
-  ];
-
-  // Funções auxiliares para determinar status
+  // Funções auxiliares para determinar status (mantidas do original)
   function getTemperatureStatus(temp) {
     if (!temp) return 'normal';
     if (temp > 30) return 'high';
@@ -190,6 +60,70 @@ export default function Sensores() {
     return 'normal';
   }
 
+  // Dados dos sensores para exibição (atualizado para usar sensorData do contexto)
+  const sensors = [
+    {
+      id: 'temperature',
+      name: 'Temperatura do Ambiente',
+      value: sensorData?.temperature,
+      unit: '°C',
+      icon: '🌡️',
+      color: '#ff6b6b',
+      status: getTemperatureStatus(sensorData?.temperature),
+      ideal: '20-30°C'
+    },
+    {
+      id: 'humidity',
+      name: 'Umidade do Ambiente',
+      value: sensorData?.humidity,
+      unit: '%',
+      icon: '💨',
+      color: '#4ecdc4',
+      status: getHumidityStatus(sensorData?.humidity),
+      ideal: '40-60%'
+    },
+    {
+      id: 'steam',
+      name: 'Vapor/Chuva',
+      value: sensorData?.steam,
+      unit: '%',
+      icon: '☁️',
+      color: '#45b7d1',
+      status: getSteamStatus(sensorData?.steam),
+      ideal: '0-20%'
+    },
+    {
+      id: 'light',
+      name: 'Luz Ambiente',
+      value: sensorData?.light,
+      unit: '%',
+      icon: '☀️',
+      color: '#ffd166',
+      status: getLightStatus(sensorData?.light),
+      ideal: '50-80%'
+    },
+    {
+      id: 'soil',
+      name: 'Umidade do Solo',
+      value: sensorData?.soil,
+      unit: '%',
+      icon: '🌱',
+      color: '#06d6a0',
+      status: getSoilStatus(sensorData?.soil),
+      ideal: '40-60%'
+    },
+    {
+      id: 'water',
+      name: 'Nível da Água',
+      value: sensorData?.water,
+      unit: '%',
+      icon: '🚰',
+      color: '#118ab2',
+      status: getWaterStatus(sensorData?.water),
+      ideal: 'acima de 20%'
+    }
+  ];
+
   return (
     <div className={styles.container}>
       {/* Cabeçalho */}
@@ -222,30 +156,17 @@ export default function Sensores() {
       <div className={styles.connectionCard}>
         <div className={styles.connectionInfo}>
           <h3>🌐 Conexão ESP32</h3>
-          <p><strong>Endereço IP:</strong> {ESP32_IP}</p>
-          <p><strong>Status:</strong> 
+          <p><strong>Endereço IP:</strong> {config?.ip}</p>
+          <p><strong>Status da conexão:</strong> 
             <span className={connectionStatus === 'Conectado' ? styles.statusGood : styles.statusBad}>
               {connectionStatus}
             </span>
           </p>
-          <p><strong>Atualização:</strong> A cada 2 segundos</p>
-        </div>
-        
-        <div className={styles.connectionActions}>
-          <button 
-            onClick={updateSensors} 
-            className={styles.refreshButton}
-            disabled={isUpdating}
-          >
-            {isUpdating ? '🔄 Atualizando...' : '🔄 Atualizar Agora'}
-          </button>
-          <span className={styles.updateInfo}>
-            {isLoading ? 'Conectando aos sensores...' : 'Dados em tempo real'}
-          </span>
+          <p><strong>Fonte de dados:</strong> {dataSource}</p>
         </div>
       </div>
 
-      {/* Grid de Sensores */}
+      {/* Grid de Sensores - COM MESMO COMPORTAMENTO DO index.js */}
       <div className={styles.section}>
         <h2 className={styles.sectionTitle}>
           <span className={styles.sectionIcon}>📊</span>
@@ -267,13 +188,14 @@ export default function Sensores() {
                 </span>
               </div>
               
+              {/* EXATAMENTE IGUAL AO index.js: mostra "Carregando..." apenas no primeiro loading */}
               <div className={styles.sensorValue}>
                 {isLoading ? (
-                  <div className={styles.loading}>Carregando...</div>
+                  <div className={styles.loading}>Conectando...</div>
                 ) : (
                   <>
                     <span className={styles.value}>
-                      {sensor.value || '--'}
+                      {sensor.value?.toFixed(sensor.unit === '°C' ? 1 : 0) || '--'}
                     </span>
                     <span className={styles.unit}>{sensor.unit}</span>
                   </>
@@ -334,26 +256,29 @@ Nível da Água: ${sensorData.water?.toFixed(0) || '--'} %`}
           </div>
           
           <div className={styles.dataInfo}>
-            <p><strong>Formato:</strong> Dados brutos do ESP32</p>
-            <p><strong>Atualizado:</strong> {lastUpdate || 'Nunca'}</p>
-            <p><strong>Endpoint:</strong> {ESP32_IP}/sensors</p>
+            <p><strong>Fonte:</strong> {dataSource}</p>
+            <p><strong>Atualizado:</strong> {lastUpdate || '--:--'}</p>
+            <p><strong>Endpoint:</strong> {config?.ip}/sensors</p>
+            {lastError && connectionStatus !== 'Conectado' && (
+              <p className={styles.errorText}>
+                <strong>Erro de conexão:</strong> {lastError}
+              </p>
+            )}
           </div>
         </div>
       </div>
 
       {/* Rodapé */}
-      <div className={styles.footer}>
-        <div className={styles.footerLinks}>
-          <Link href="/" className={styles.footerLink}>
-            ← Dashboard Principal
-          </Link>
-          <Link href="/atuadores" className={styles.footerLink}>
-            Atuadores →
-          </Link>
-        </div>
-        <div className={styles.footerInfo}>
-          Smart Farm v2.0.0 | Página de Sensores | {new Date().toLocaleDateString('pt-BR')}
-        </div>
+      {/* Navegação - NOVO (igual a atuadores) */}
+      <div className={styles.navigation}>
+        <Link href="/" className={styles.navButton}>
+          <span className={styles.navIcon}>←</span>
+          Dashboard
+        </Link>
+        <Link href="/atuadores" className={styles.navButton}>
+          Atuadores
+          <span className={styles.navIcon}>→</span>
+        </Link>
       </div>
     </div>
   );

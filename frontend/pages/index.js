@@ -3,127 +3,53 @@ import Link from 'next/link';
 import { useAuth } from '../contexts/AuthContext';
 import LineChart from '../components/LineChart';
 import styles from '../styles/home.module.css';
-
-// Configuração do ESP32 
-const ESP32_IP = "http://10.106.33.1"; 
+import { useESP32 } from '../contexts/ESP32Context';
 
 export default function Home() {
   const { user } = useAuth();
-  const [sensorData, setSensorData] = useState(null);
-  const [sensorHistory, setSensorHistory] = useState([]);
-  const [isLoading, setIsLoading] =  useState(true);
-  const [lastUpdate, setLastUpdate] = useState(null);
-  const [connectionStatus, setConnectionStatus] = useState('Conectando...');
-  const [dataSource, setDataSource] = useState('ESP32 (Real)');
-  const [lastError, setLastError] = useState(null);
+  
+  // Usando o contexto ESP32 - TODO O FALLBACK ESTÁ AQUI!
+  const { 
+    sensorData,            // Dados reais OU simulados (fallback)
+    sensorHistory,         // Histórico real OU simulado
+    connectionStatus,      // 'Conectado' OU 'Desconectado'
+    dataSource,           // 'ESP32 (Real)' OU 'Simulação (Demo)'
+    lastUpdate,           // Timestamp da última atualização
+    lastError,            // Último erro (se houver)
+    isLoading,            // Estado de loading
+    fetchSensorData,      // Função para atualização manual
+    config                // Configuração (inclui ESP32_IP)
+  } = useESP32();
 
-  // Função para buscar dados do ESP32
-  const fetchSensorData = async () => {
-    try {
-      setIsLoading(true);
-      setLastError(null);
-      
-      // Timeout de 3 segundos
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000);
-      
-      const response = await fetch(`${ESP32_IP}/sensors`, {
-        signal: controller.signal
-      });
-      
-      clearTimeout(timeoutId);
-      
-      if (!response.ok) {
-        throw new Error(`Erro HTTP ${response.status}: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
-      
-      // Validação básica dos dados recebidos
-      if (!data || typeof data !== 'object') {
-        throw new Error('Dados recebidos em formato inválido');
-      }
-      
-      // Normaliza a luminosidade (como no tutorial)
-      if (data.light !== undefined) {
-        data.light = normalizeLight(data.light);
-      }
-      
-      setSensorData(data);
-      setConnectionStatus('Conectado');
-      setDataSource('ESP32 (Real)');
-      
-      // Atualiza histórico (mantém últimos 20 pontos)
-      setSensorHistory(prev => {
-        const newHistory = [...prev, {
-          timestamp: new Date().toLocaleTimeString(),
-          temperature: data.temperature || 0,
-          humidity: data.humidity || 0,
-          soil: data.soil || 0,
-          light: data.light || 0,
-          water: data.water || 0
-        }];
-        
-        // Mantém apenas últimos 20 pontos
-        return newHistory.slice(-20);
-      });
-      
-      setLastUpdate(new Date().toLocaleTimeString());
-    } catch (error) {
-      console.error('Erro ao buscar dados do ESP32:', error);
-      setConnectionStatus('Desconectado');
-      setDataSource('Simulação (Demo)');
-      setLastError(error.message);
-      
-      // Dados simulados para demonstração - SEMPRE gera novos dados
-      const simulatedData = {
-        temperature: 25.3 + (Math.random() * 2 - 1),
-        humidity: 60 + (Math.random() * 10 - 5),
-        soil: 45 + (Math.random() * 20 - 10),
-        light: 70 + (Math.random() * 30 - 15),
-        water: 30 + (Math.random() * 40 - 20)
-      };
-      
-      // Atualiza sempre com novos dados simulados
-      setSensorData(simulatedData);
-      
-      // Adiciona ao histórico mesmo em modo simulação
-      setSensorHistory(prev => {
-        const newHistory = [...prev, {
-          timestamp: new Date().toLocaleTimeString(),
-          temperature: simulatedData.temperature,
-          humidity: simulatedData.humidity,
-          soil: simulatedData.soil,
-          light: simulatedData.light,
-          water: simulatedData.water
-        }];
-        
-        return newHistory.slice(-20);
-      });
-      
-      setLastUpdate(new Date().toLocaleTimeString());
-    } finally {
-      setIsLoading(false);
-    }
+  // Funções auxiliares simplificadas
+  const getTemperatureStatus = (temp) => {
+    if (!temp) return 'normal';
+    if (temp > 30) return 'high';
+    if (temp < 20) return 'low';
+    return 'normal';
   };
 
-  // Função para normalizar luminosidade (do tutorial)
-  const normalizeLight = (raw) => {
-    let light = Math.pow(raw / 4095.0, 0.6) * 100.0;
-    light = Math.round(light / 10) * 10;
-    return Math.min(100, Math.max(0, light));
+  const getSoilStatus = (soil) => {
+    if (!soil) return 'normal';
+    if (soil > 60) return 'high';
+    if (soil < 40) return 'low';
+    return 'normal';
   };
 
-  // Busca dados inicial e configura atualização periódica
-  useEffect(() => {
-    fetchSensorData();
-    
-    const intervalId = setInterval(fetchSensorData, 2000); // Atualiza a cada 2 segundos
-    
-    return () => clearInterval(intervalId);
-  }, []);
+  const getLightStatus = (light) => {
+    if (!light) return 'normal';
+    if (light > 80) return 'high';
+    if (light < 50) return 'low';
+    return 'normal';
+  };
 
-  // Cards de navegação
+  const getWaterStatus = (water) => {
+    if (!water) return 'normal';
+    if (water < 20) return 'low';
+    return 'normal';
+  };
+
+  // Cards de navegação (mantendo igual)
   const navCards = [
     { 
       id: 1, 
@@ -159,7 +85,7 @@ export default function Home() {
     },
   ];
 
-  // Prepara dados para o gráfico
+  // Prepara dados para o gráfico (mantendo igual)
   const chartData = {
     labels: sensorHistory.map(item => item.timestamp.split(':').slice(0, 2).join(':')),
     datasets: [
@@ -189,7 +115,7 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      {/* Cabeçalho */}
+      {/* Cabeçalho - mantendo igual */}
       <div className={styles.header}>
         <h1 className={styles.title}>
           <span className={styles.titleIcon}>🌱</span>
@@ -197,7 +123,7 @@ export default function Home() {
         </h1>
       </div>
 
-      {/* Indicador de Modo de Operação (Temporário) */}
+      {/* Indicador de Modo de Operação - mantendo igual */}
       <div className={styles.modeIndicator}>
         <div className={`${styles.modeCard} ${dataSource === 'ESP32 (Real)' ? styles.modeReal : styles.modeSimulated}`}>
           <div className={styles.modeHeader}>
@@ -212,12 +138,12 @@ export default function Home() {
           <div className={styles.modeDetails}>
             <p><strong>Fonte de dados:</strong> {dataSource}</p>
             <p><strong>Status da conexão:</strong> 
-              <span className={`${styles.statusText} ${connectionStatus === 'Conectado' ? styles.statusConnected : styles.statusDisconnected}`}>
+              <span className={`${styles.statusText} ${connectionStatus === 'Conectado' ? styles.statusGood : styles.statusBad}`}>
                 {connectionStatus}
               </span>
             </p>
             <p><strong>Última atualização:</strong> {lastUpdate || '--:--'}</p>
-            {lastError && (
+            {lastError && connectionStatus != 'Conectado' && (
               <p className={styles.errorText}>
                 <strong>Último erro:</strong> {lastError}
               </p>
@@ -226,14 +152,20 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Grid de cards de status */}
+      {/* Grid de cards de status - VOLTANDO AO ESTILO ORIGINAL */}
       <div className={styles.statsGrid}>
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <span className={styles.statIcon}>🌡️</span>
             <h3>Temperatura</h3>
-            <span className={`${styles.statBadge} ${sensorData?.temperature > 30 ? styles.high : styles.normal}`}>
-              {sensorData?.temperature > 30 ? 'Alta' : 'Normal'}
+            <span className={`${styles.statBadge} ${
+              getTemperatureStatus(sensorData?.temperature) === 'high' ? styles.high : 
+              getTemperatureStatus(sensorData?.temperature) === 'low' ? styles.low : 
+              styles.normal
+            }`}>
+              {getTemperatureStatus(sensorData?.temperature) === 'high' ? 'Alta' : 
+               getTemperatureStatus(sensorData?.temperature) === 'low' ? 'Baixa' : 
+               'Normal'}
             </span>
           </div>
           <div className={styles.statValue}>
@@ -255,8 +187,14 @@ export default function Home() {
           <div className={styles.statHeader}>
             <span className={styles.statIcon}>💧</span>
             <h3>Umidade do Solo</h3>
-            <span className={`${styles.statBadge} ${sensorData?.soil < 30 ? styles.low : styles.normal}`}>
-              {sensorData?.soil < 30 ? 'Baixa' : 'Normal'}
+            <span className={`${styles.statBadge} ${
+              getSoilStatus(sensorData?.soil) === 'high' ? styles.high : 
+              getSoilStatus(sensorData?.soil) === 'low' ? styles.low : 
+              styles.normal
+            }`}>
+              {getSoilStatus(sensorData?.soil) === 'high' ? 'Alta' : 
+               getSoilStatus(sensorData?.soil) === 'low' ? 'Baixa' : 
+               'Normal'}
             </span>
           </div>
           <div className={styles.statValue}>
@@ -278,8 +216,14 @@ export default function Home() {
           <div className={styles.statHeader}>
             <span className={styles.statIcon}>☀️</span>
             <h3>Luminosidade</h3>
-            <span className={`${styles.statBadge} ${sensorData?.light > 80 ? styles.high : styles.normal}`}>
-              {sensorData?.light > 80 ? 'Alta' : 'Normal'}
+            <span className={`${styles.statBadge} ${
+              getLightStatus(sensorData?.light) === 'high' ? styles.high : 
+              getLightStatus(sensorData?.light) === 'low' ? styles.low : 
+              styles.normal
+            }`}>
+              {getLightStatus(sensorData?.light) === 'high' ? 'Alta' : 
+               getLightStatus(sensorData?.light) === 'low' ? 'Baixa' : 
+               'Normal'}
             </span>
           </div>
           <div className={styles.statValue}>
@@ -301,8 +245,10 @@ export default function Home() {
           <div className={styles.statHeader}>
             <span className={styles.statIcon}>🚰</span>
             <h3>Nível da Água</h3>
-            <span className={`${styles.statBadge} ${sensorData?.water < 20 ? styles.low : styles.normal}`}>
-              {sensorData?.water < 20 ? 'Baixo' : 'Normal'}
+            <span className={`${styles.statBadge} ${
+              getWaterStatus(sensorData?.water) === 'low' ? styles.low : styles.normal
+            }`}>
+              {getWaterStatus(sensorData?.water) === 'low' ? 'Baixo' : 'Normal'}
             </span>
           </div>
           <div className={styles.statValue}>
@@ -321,7 +267,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Seção do gráfico */}
+      {/* Seção do gráfico - mantendo igual */}
       <div className={styles.chartSection}>
         <div className={styles.sectionHeader}>
           <h2>📈 Evolução Temporal dos Sensores</h2>
@@ -331,13 +277,6 @@ export default function Home() {
                 ? 'Dados em tempo real do ESP32 | Atualização: 2s' 
                 : 'Dados simulados para demonstração | Atualização: 2s'}
             </span>
-            <button 
-              onClick={fetchSensorData} 
-              className={styles.refreshBtn}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Atualizando...' : 'Atualizar Agora'}
-            </button>
           </div>
         </div>
         
@@ -348,7 +287,7 @@ export default function Home() {
             <div className={styles.noData}>
               <div className={styles.noDataIcon}>📊</div>
               <h3>Aguardando dados do ESP32...</h3>
-              <p>Conectando ao ESP32 em {ESP32_IP}</p>
+              <p>Conectando ao ESP32 em {config?.ip}</p>
               <p>Verifique a conexão e o endereço IP do dispositivo</p>
             </div>
           )}
@@ -370,7 +309,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Cards de navegação */}
+      {/* Cards de navegação - mantendo igual */}
       <div className={styles.navigationSection}>
         <h2>🚀 Navegação Rápida</h2>
         <div className={styles.navGrid}>
@@ -390,25 +329,24 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Informações do sistema */}
+      {/* Informações do sistema - ajustando para usar config?.ip */}
       <div className={styles.systemInfo}>
         <div className={styles.infoCard}>
           <h3>🌐 Conexão ESP32</h3>
-          <p><strong>Endereço IP:</strong> {ESP32_IP}</p>
+          <p><strong>Endereço IP:</strong> {config?.ip}</p>
           <p><strong>Status:</strong> 
             <span className={`${connectionStatus === 'Conectado' ? styles.statusGood : styles.statusBad}`}>
               {connectionStatus}
             </span>
           </p>
           <p><strong>Intervalo de atualização:</strong> 2 segundos</p>
-          <p><strong>Tentativas de reconexão:</strong> Automáticas (2s)</p>
         </div>
         
         <div className={styles.infoCard}>
           <h3>📋 Informações do Sistema</h3>
           <p><strong>Usuário:</strong> {user ? user.username : 'demo_user'}</p>
           <p><strong>Sessão iniciada:</strong> {new Date().toLocaleDateString('pt-BR')}</p>
-          <p><strong>Versão:</strong> Smart Farm v2.0.0</p>
+          <p><strong>Versão:</strong> Smart Farm v1.0.0</p>
           <p><strong>Modo atual:</strong> {dataSource}</p>
         </div>
       </div>

@@ -2,9 +2,11 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import styles from '../styles/login.module.css';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Login() {
   const router = useRouter();
+  const { login } = useAuth();
   const [usuario, setUsuario] = useState('');
   const [senha, setSenha] = useState('');
   const [showSenha, setShowSenha] = useState(false);
@@ -16,35 +18,31 @@ export default function Login() {
     if (usuarioRef.current) usuarioRef.current.focus();
   }, []);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setMsg('');
     setIsError(false);
-
-    if (typeof window === 'undefined') return;
-
-    const listaUser = JSON.parse(localStorage.getItem('listaUser') || '[]');
-    const userValid = listaUser.find(
-      (u) => u.userCad === usuario && u.senhaCad === senha
-    );
-
-    if (userValid) {
-      const mathRandom = Math.random().toString(16).substring(2);
-      const token = mathRandom + mathRandom;
-      localStorage.setItem('token', token);
-      localStorage.setItem(
-        'userLogado',
-        JSON.stringify({
-          nome: userValid.nomeCad,
-          user: userValid.userCad,
-          senha: userValid.senhaCad
-        })
-      );
-      router.push('/');
+    
+    if (!usuario.trim() || !senha.trim()) {
+      setIsError(true);
+      setMsg('Preencha todos os campos');
+      return;
+    }
+    
+    // Usar o AuthContext com backend
+    const result = await login(usuario, senha);
+    
+    if (result.success) {
+      setMsg('Login realizado com sucesso!');
+      setIsError(false);
+      
+      // Redirecionar após breve delay
+      setTimeout(() => {
+        router.push('/');
+      }, 1000);
     } else {
       setIsError(true);
-      setMsg('Usuário ou senha incorretos');
-      if (usuarioRef.current) usuarioRef.current.focus();
+      setMsg(result.error || 'Credenciais inválidas');
     }
   }
 

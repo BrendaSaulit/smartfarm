@@ -104,17 +104,41 @@
 .userDetails {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px; 
 }
 
 .userName {
   font-weight: 500;
   color: var(--text-color);
   font-size: 0.9rem;
+  line-height: 1.2;
 }
 
+/* Status natural - alinhado com o nome */
 .userStatus {
-  font-size: 0.7rem;
-  color: var(--text-secondary);
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: lowercase;
+  letter-spacing: 0.2px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  display: inline-block;
+  line-height: 1.2;
+  margin-top: 1px; 
+}
+
+.userStatus.online {
+  color: #10b981; 
+  background-color: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.userStatus.offline {
+  color: #ef4444; 
+  background-color: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .logoutBtn {
