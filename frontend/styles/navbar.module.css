@@ -19,13 +19,15 @@
 
 /* Logo */
 .logo {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 10px;
   font-size: 1.5rem;
   font-weight: bold;
   color: var(--primary-color);
   text-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+  white-space: nowrap;
+  margin-right: 16px; /* afasta da Home */
 }
 
 .logoIcon {
@@ -71,13 +73,22 @@
   box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
 }
 
-.navIcon {
-  font-size: 1.2rem;
+.navIcon,
+.logoIcon,
+.userIcon {
+  font-size: 1.6rem;
+  color: #e7e7e7; /* cinza */
+}
+
+.navLink:hover .navIcon,
+.navLink.active .navIcon,
+.logo:hover .logoIcon {
+  color: var(--primary-color);
 }
 
 .navLabel {
   font-weight: 500;
-  font-size: 0.9rem;
+  font-size: 1.05rem; /* antes era menor */
 }
 
 /* Seção do usuário */

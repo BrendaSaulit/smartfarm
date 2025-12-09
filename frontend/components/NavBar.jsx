@@ -1,3 +1,4 @@
+import { FiHome, FiWifi, FiTool, FiActivity, FiFileText, FiUser, FiLogOut, FiLeaf } from 'react-icons/fi';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
@@ -9,19 +10,16 @@ export default function NavBar() {
   const { user, logout } = useAuth();
   const [isClient, setIsClient] = useState(false);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-  
+  useEffect(() => setIsClient(true), []);
   if (!isClient) return null;
-  
+
   const navItems = [
-    { path: '/', label: 'Home', icon: '🏠' },
-    { path: '/sensores', label: 'Sensores', icon: '📡' },
-    { path: '/atuadores', label: 'Atuadores', icon: '⚙️' },
-    { path: '/indicadores', label: 'Indicadores', icon: '📊' },
-    { path: '/logs', label: 'Logs', icon: '📋' },
-    { path: '/contato', label: 'Contato/CV', icon: '👤' },
+    { path: '/', label: 'Home', Icon: FiHome },
+    { path: '/sensores', label: 'Sensores', Icon: FiWifi },
+    { path: '/atuadores', label: 'Atuadores', Icon: FiTool },
+    { path: '/indicadores', label: 'Indicadores', Icon: FiActivity },
+    { path: '/logs', label: 'Logs', Icon: FiFileText },
+    { path: '/contato', label: 'Contato/CV', Icon: FiUser },
   ];
 
   const handleLogout = () => {
@@ -40,16 +38,14 @@ export default function NavBar() {
 
         {/* Itens de navegação */}
         <div className={styles.navItems}>
-          {navItems.map((item) => (
+          {navItems.map(({ path, label, Icon }) => (
             <Link
-              key={item.path}
-              href={item.path}
-              className={`${styles.navLink} ${
-                router.pathname === item.path ? styles.active : ''
-              }`}
+              key={path}
+              href={path}
+              className={`${styles.navLink} ${router.pathname === path ? styles.active : ''}`}
             >
-              <span className={styles.navIcon}>{item.icon}</span>
-              <span className={styles.navLabel}>{item.label}</span>
+              <span className={styles.navIcon}>{Icon ? <Icon /> : null}</span>
+              <span className={styles.navLabel}>{label}</span>
             </Link>
           ))}
         </div>
@@ -57,24 +53,18 @@ export default function NavBar() {
         {/* Informações do usuário */}
         <div className={styles.userSection}>
           <div className={styles.userInfo}>
-            <span className={styles.userIcon}>👤</span>
+            <span className={styles.userIcon}>{FiUser ? <FiUser /> : null}</span>
             <div className={styles.userDetails}>
-              <span className={styles.userName}>
-                {user ? user.username : 'Aluno Demo'}
-              </span>
+              <span className={styles.userName}>{user ? user.username : 'Aluno Demo'}</span>
               
               {/* Status limpo e centralizado */}
-              <span 
-                className={`${styles.userStatus} ${
-                  user ? styles.online : styles.offline
-                }`}
-              >
+              <span className={`${styles.userStatus} ${user ? styles.online : styles.offline}`}>
                 {user ? 'Online' : 'Offline'}
               </span>
             </div>
           </div>
           <button onClick={handleLogout} className={styles.logoutBtn}>
-            Sair
+            {FiLogOut ? <FiLogOut style={{ marginRight: 6 }} /> : null} Sair
           </button>
         </div>
       </div>
