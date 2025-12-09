@@ -1,4 +1,4 @@
-import { FiHome, FiWifi, FiTool, FiActivity, FiFileText, FiUser, FiLogOut, FiLeaf, FiLogIn } from 'react-icons/fi';
+import { FiHome, FiWifi, FiTool, FiActivity, FiUser, FiLogOut, FiLogIn } from 'react-icons/fi';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
@@ -19,12 +19,11 @@ export default function NavBar() {
     { path: '/atuadores', label: 'Atuadores', Icon: FiTool },
     { path: '/indicadores', label: 'Indicadores', Icon: FiActivity },
     { path: '/contato', label: 'Contato/CV', Icon: FiUser },
-    { path: '/login', label: 'Entrar', Icon: FiLogIn },
   ];
 
   const handleLogout = () => {
     logout();
-    router.push('/login');
+    router.push('/');
   };
 
   return (
@@ -48,24 +47,39 @@ export default function NavBar() {
               <span className={styles.navLabel}>{label}</span>
             </Link>
           ))}
+
+          {/* Botão Entrar - aparece APENAS quando deslogado */}
+          {!user && (
+            <Link
+              href="/login"
+              className={`${styles.navLink} ${router.pathname === '/login' ? styles.active : ''}`}
+            >
+              <span className={styles.navIcon}><FiLogIn /></span>
+              <span className={styles.navLabel}>Entrar</span>
+            </Link>
+          )}
         </div>
 
-        {/* Informações do usuário */}
+        {/* Seção do usuário - SEMPRE APARECE */}
         <div className={styles.userSection}>
           <div className={styles.userInfo}>
-            <span className={styles.userIcon}>{FiUser ? <FiUser /> : null}</span>
+            <span className={styles.userIcon}><FiUser /></span>
             <div className={styles.userDetails}>
-              <span className={styles.userName}>{user ? user.username : 'Aluno Demo'}</span>
-              
-              {/* Status limpo e centralizado */}
+              <span className={styles.userName}>
+                {user ? user.username : 'Aluno Demo'}
+              </span>
               <span className={`${styles.userStatus} ${user ? styles.online : styles.offline}`}>
                 {user ? 'Online' : 'Offline'}
               </span>
             </div>
           </div>
-          <button onClick={handleLogout} className={styles.logoutBtn}>
-            {FiLogOut ? <FiLogOut style={{ marginRight: 6 }} /> : null} Sair
-          </button>
+
+          {/* Botão Sair - aparece APENAS quando logado */}
+          {user && (
+            <button onClick={handleLogout} className={styles.logoutBtn}>
+              <FiLogOut style={{ marginRight: 6 }} /> Sair
+            </button>
+          )}
         </div>
       </div>
     </nav>
