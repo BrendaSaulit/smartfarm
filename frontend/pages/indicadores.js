@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import LineChart from '../components/LineChart';
+import QuickControls from '../components/QuickControls';
 import styles from '../styles/indicadores.module.css';
 import { useESP32 } from '../contexts/ESP32Context';
 import {
@@ -10,13 +11,9 @@ import {
   FiRefreshCw, 
   FiBarChart2,
   FiZap,
-  FiSun,
-  FiWind,
-  FiDroplet,
   FiArrowLeft,
   FiArrowRight,
 } from 'react-icons/fi';
-import { FaApple } from 'react-icons/fa';
 
 export default function Indicadores() {
   const router = useRouter();
@@ -224,66 +221,19 @@ export default function Indicadores() {
       </div>
 
       {/* Controles Rápidos */}
-      <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>
-          <span className={styles.sectionIcon}><FiZap /></span>
-          Controles Rápidos
-        </h2>
+      <QuickControls onSend={sendCmd} isSending={isSendingCommand} />
 
-        <div className={styles.quickControls}>
-          <button 
-            onClick={() => sendCmd('LED')}
-            className={styles.quickButton}
-            style={{ backgroundColor: '#ffd166' }}
-            disabled={isSendingCommand}
-          >
-            <span className={styles.quickIcon}><FiSun /></span>
-            LED
-          </button>
-
-          <button 
-            onClick={() => sendCmd('FAN')}
-            className={styles.quickButton}
-            style={{ backgroundColor: '#4ecdc4' }}
-            disabled={isSendingCommand}
-          >
-            <span className={styles.quickIcon}><FiWind /></span>
-            Ventilador
-          </button>
-
-          <button 
-            onClick={() => sendCmd('FEED')}
-            className={styles.quickButton}
-            style={{ backgroundColor: '#06d6a0' }}
-            disabled={isSendingCommand}
-          >
-            <span className={styles.quickIcon}><FaApple /></span>
-            Alimentar
-          </button>
-
-          <button 
-            onClick={() => sendCmd('WATER')}
-            className={styles.quickButton}
-            style={{ backgroundColor: '#118ab2' }}
-            disabled={isSendingCommand}
-          >
-            <span className={styles.quickIcon}><FiDroplet /></span>
-            Regar
-          </button>
+      {localCommandStatus !== 'Pronto' && (
+        <div className={styles.commandStatus}>
+          <span className={
+            localCommandStatus.toLowerCase().includes('sucesso')
+              ? styles.statusSuccess
+              : styles.statusError
+          }>
+            {localCommandStatus}
+          </span>
         </div>
-
-        {localCommandStatus !== 'Pronto' && (
-          <div className={styles.commandStatus}>
-            <span className={
-              localCommandStatus.toLowerCase().includes('sucesso')
-                ? styles.statusSuccess
-                : styles.statusError
-            }>
-              {localCommandStatus}
-            </span>
-          </div>
-        )}
-      </div>
+      )}
 
       {/* Navegação - Footer */}
       <div className={styles.navigation}>
