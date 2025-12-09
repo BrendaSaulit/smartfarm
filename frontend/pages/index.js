@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useAuth } from '../contexts/AuthContext';
 import LineChart from '../components/LineChart';
@@ -21,8 +22,16 @@ import {
 } from 'react-icons/fi';
 
 export default function Home() {
+  const router = useRouter();
   const { user } = useAuth();
   
+  // Redireciona para login se não estiver logado
+  useEffect(() => {
+    if (!user) {
+      router.replace('/login');
+    }
+  }, [user, router]);
+
   // Usando o contexto ESP32 - TODO O FALLBACK ESTÁ AQUI!
   const { 
     sensorData,            // Dados reais OU simulados (fallback)
