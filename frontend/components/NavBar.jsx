@@ -14,16 +14,24 @@ export default function NavBar() {
   if (!isClient) return null;
 
   const navItems = [
-    { path: '/', label: 'Home', Icon: FiHome },
-    { path: '/sensores', label: 'Sensores', Icon: FiWifi },
-    { path: '/atuadores', label: 'Atuadores', Icon: FiTool },
-    { path: '/indicadores', label: 'Indicadores', Icon: FiActivity },
-    { path: '/contato', label: 'Contato/CV', Icon: FiUser },
+    { path: '/', label: 'Home', Icon: FiHome, public: true },
+    { path: '/sensores', label: 'Sensores', Icon: FiWifi, public: false },
+    { path: '/atuadores', label: 'Atuadores', Icon: FiTool, public: false },
+    { path: '/indicadores', label: 'Indicadores', Icon: FiActivity, public: false },
+    { path: '/contato', label: 'Contato/CV', Icon: FiUser, public: false },
   ];
 
   const handleLogout = () => {
     logout();
     router.push('/');
+  };
+
+  const handleNavClick = (e, path, isPublic) => {
+    // Se a rota não é pública E o usuário está deslogado
+    if (!isPublic && !user) {
+      e.preventDefault();
+      router.push('/login');
+    }
   };
 
   return (
@@ -37,10 +45,11 @@ export default function NavBar() {
 
         {/* Itens de navegação */}
         <div className={styles.navItems}>
-          {navItems.map(({ path, label, Icon }) => (
+          {navItems.map(({ path, label, Icon, public: isPublic }) => (
             <Link
               key={path}
               href={path}
+              onClick={(e) => handleNavClick(e, path, isPublic)}
               className={`${styles.navLink} ${router.pathname === path ? styles.active : ''}`}
             >
               <span className={styles.navIcon}>{Icon ? <Icon /> : null}</span>
