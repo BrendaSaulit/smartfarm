@@ -778,6 +778,7 @@
   color: #ffd166;
   font-weight: 600;
   margin-top: 5px;
+  text-align: left;
 }
 
 /* ===== STATUS READY ===== */
@@ -796,6 +797,12 @@
   background-color: #9d4edd;
   box-shadow: 0 0 10px #9d4edd;
   animation: pulse 1.5s infinite;
+}
+
+.statusAutoMode {
+  color: #8b3ec5;
+  font-weight: 600;
+  margin-left: 5px;
 }
 
 /* ===== INDICADOR DE PROCESSAMENTO ===== */
