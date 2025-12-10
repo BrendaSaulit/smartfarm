@@ -230,97 +230,6 @@
   padding-top: 0.8rem;
 }
 
-/* Chart Section */
-.chartSection {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  padding: 1.5rem;
-  margin-bottom: 2.5rem;
-}
-
-.sectionHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.sectionHeader h2 {
-  margin: 0;
-  color: var(--text-color);
-  font-size: 1.5rem;
-}
-
-.chartControls {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.chartInfo {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-}
-
-.chartContainer {
-  height: 400px;
-  background-color: rgba(42, 42, 42, 0.5);
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  position: relative;
-}
-
-.noData {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  color: var(--text-secondary);
-}
-
-.noDataIcon {
-  font-size: 4rem;
-  margin-bottom: 1rem;
-  opacity: 0.5;
-}
-
-.noData h3 {
-  color: var(--text-color);
-  margin-bottom: 0.5rem;
-}
-
-.noData p {
-  text-align: center;
-  margin: 0.25rem 0;
-  font-size: 0.9rem;
-}
-
-.chartLegend {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.legendItem {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--text-color);
-  font-size: 0.9rem;
-}
-
-.legendColor {
-  width: 15px;
-  height: 15px;
-  border-radius: 3px;
-}
-
 /* Navigation Section */
 .navigationSection {
   margin-bottom: 2.5rem;
@@ -440,19 +349,6 @@
   
   .connectionInfo {
     text-align: center;
-  }
-  
-  .sectionHeader {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .chartControls {
-    justify-content: space-between;
-  }
-  
-  .chartContainer {
-    height: 300px;
   }
 }
 

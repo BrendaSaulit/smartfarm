@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import LineChart from '../components/LineChart';
+import Graph from '../components/Graph';
 import QuickControls from '../components/QuickControls';
 import styles from '../styles/indicadores.module.css';
 import { useESP32 } from '../contexts/ESP32Context';
@@ -9,10 +9,12 @@ import {
   FiActivity,
   FiGlobe,
   FiRefreshCw, 
-  FiBarChart2,
   FiZap,
   FiArrowLeft,
   FiArrowRight,
+  FiSun,
+  FiWind,
+  FiDroplet
 } from 'react-icons/fi';
 
 export default function Indicadores() {
@@ -35,6 +37,13 @@ export default function Indicadores() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [lastCommand, setLastCommand] = useState(null);
   const [localCommandStatus, setLocalCommandStatus] = useState('Pronto');
+
+  // Comandos sem o "Alimentar"
+  const quickCommands = [
+    { id: 'LED',   label: 'LED',        cmd: 'LED',   color: '#ffd166', Icon: FiSun },
+    { id: 'FAN',   label: 'Ventilador', cmd: 'FAN',   color: '#4ecdc4', Icon: FiWind },
+    { id: 'WATER', label: 'Regar',      cmd: 'WATER', color: '#118ab2', Icon: FiDroplet },
+  ];
 
   const handleManualUpdate = async () => {
     setIsUpdating(true);
@@ -78,33 +87,6 @@ export default function Indicadores() {
         setLocalCommandStatus('Pronto');
       }, 3000);
     }
-  };
-
-  const chartData = {
-    labels: sensorHistory.map(item => item.timestamp.split(':').slice(0, 2).join(':')),
-    datasets: [
-      {
-        label: 'Temperatura (°C)',
-        data: sensorHistory.map(item => item.temperature),
-        borderColor: '#ff6b6b',
-        backgroundColor: 'rgba(255, 107, 107, 0.1)',
-        tension: 0.4
-      },
-      {
-        label: 'Umidade (%)',
-        data: sensorHistory.map(item => item.humidity),
-        borderColor: '#4ecdc4',
-        backgroundColor: 'rgba(78, 205, 196, 0.1)',
-        tension: 0.4
-      },
-      {
-        label: 'Umidade Solo (%)',
-        data: sensorHistory.map(item => item.soil),
-        borderColor: '#45b7d1',
-        backgroundColor: 'rgba(69, 183, 209, 0.1)',
-        tension: 0.4
-      }
-    ]
   };
 
   return (
@@ -156,50 +138,21 @@ export default function Indicadores() {
       </div>
 
       {/* Gráfico */}
-      <div className={styles.chartSection}>
-        <div className={styles.sectionHeader}>
-          <h2><FiBarChart2 /> Evolução Temporal dos Sensores</h2>
-          <div className={styles.chartControls}>
-            <span className={styles.chartInfo}>
-              {dataSource === 'ESP32 (Real)' 
-                ? `Dados em tempo real do ESP32 | Atualização: 2s` 
-                : `Dados simulados para demonstração | Atualização: 2s`}
-            </span>
-          </div>
-        </div>
-        
-        <div className={styles.chartContainer}>
-          {sensorHistory.length > 0 ? (
-            <LineChart data={chartData} />
-          ) : (
-            <div className={styles.noData}>
-              <div className={styles.noDataIcon}><FiBarChart2 /></div>
-              <h3>Aguardando dados do ESP32...</h3>
-              <p>Conectando ao ESP32 em {config.ESP32_IP}</p>
-              <p>Verifique a conexão e o endereço IP do dispositivo</p>
-              {lastError && <p style={{color: 'var(--error-color)', marginTop: '1rem'}}>Erro: {lastError}</p>}
-            </div>
-          )}
-        </div>
-        
-        <div className={styles.chartLegend}>
-          <div className={styles.legendItem}>
-            <span className={styles.legendColor} style={{backgroundColor: '#ff6b6b'}}></span>
-            Temperatura (°C)
-          </div>
-          <div className={styles.legendItem}>
-            <span className={styles.legendColor} style={{backgroundColor: '#4ecdc4'}}></span>
-            Umidade do Ar (%)
-          </div>
-          <div className={styles.legendItem}>
-            <span className={styles.legendColor} style={{backgroundColor: '#45b7d1'}}></span>
-            Umidade do Solo (%)
-          </div>
-        </div>
-      </div>
+      <Graph
+        sensorHistory={sensorHistory}
+        dataSource={dataSource}
+        config={config}
+        lastError={lastError}
+        title="Evolução Temporal dos Sensores"
+        showInfo={true}
+      />
 
       {/* Controles Rápidos */}
-      <QuickControls onSend={sendCmd} isSending={isSendingCommand} />
+      <QuickControls
+        onSend={sendCmd}
+        isSending={isSendingCommand}
+        commands={quickCommands}
+      />
 
       {localCommandStatus !== 'Pronto' && (
         <div className={styles.commandStatus}>

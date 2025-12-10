@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useAuth } from '../contexts/AuthContext';
-import LineChart from '../components/LineChart';
+import Graph from '../components/Graph';
 import styles from '../styles/home.module.css';
 import { useESP32 } from '../contexts/ESP32Context';
 import {
@@ -17,8 +17,8 @@ import {
   FiBarChart2,
   FiFileText,
   FiNavigation,
-  FiGlobe, // adicionado
-  FiInfo,  // adicionado
+  FiGlobe,
+  FiInfo,
 } from 'react-icons/fi';
 
 export default function Home() {
@@ -80,34 +80,6 @@ export default function Home() {
     { id: 3, title: 'Indicadores', path: '/indicadores', Icon: FiBarChart2, description: 'Métricas e análises avançadas',                color: '#45b7d1' },
     { id: 4, title: 'Logs',        path: '/logs',        Icon: FiFileText,  description: 'Histórico de eventos e atividades',            color: '#96ceb4' },
   ];
-
-  // Prepara dados para o gráfico (mantendo igual)
-  const chartData = {
-    labels: sensorHistory.map(item => item.timestamp.split(':').slice(0, 2).join(':')),
-    datasets: [
-      {
-        label: 'Temperatura (°C)',
-        data: sensorHistory.map(item => item.temperature),
-        borderColor: '#ff6b6b',
-        backgroundColor: 'rgba(255, 107, 107, 0.1)',
-        tension: 0.4
-      },
-      {
-        label: 'Umidade (%)',
-        data: sensorHistory.map(item => item.humidity),
-        borderColor: '#4ecdc4',
-        backgroundColor: 'rgba(78, 205, 196, 0.1)',
-        tension: 0.4
-      },
-      {
-        label: 'Umidade Solo (%)',
-        data: sensorHistory.map(item => item.soil),
-        borderColor: '#45b7d1',
-        backgroundColor: 'rgba(69, 183, 209, 0.1)',
-        tension: 0.4
-      }
-    ]
-  };
 
   return (
     <div className={styles.container}>
@@ -263,47 +235,15 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Seção do gráfico - mantendo igual */}
-      <div className={styles.chartSection}>
-        <div className={styles.sectionHeader}>
-          <h2>📈 Evolução Temporal dos Sensores</h2>
-          <div className={styles.chartControls}>
-            <span className={styles.chartInfo}>
-              {dataSource === 'ESP32 (Real)' 
-                ? 'Dados em tempo real do ESP32 | Atualização: 2s' 
-                : 'Dados simulados para demonstração | Atualização: 2s'}
-            </span>
-          </div>
-        </div>
-        
-        <div className={styles.chartContainer}>
-          {sensorHistory.length > 0 ? (
-            <LineChart data={chartData} />
-          ) : (
-            <div className={styles.noData}>
-              <div className={styles.noDataIcon}>📊</div>
-              <h3>Aguardando dados do ESP32...</h3>
-              <p>Conectando ao ESP32 em {config?.ip}</p>
-              <p>Verifique a conexão e o endereço IP do dispositivo</p>
-            </div>
-          )}
-        </div>
-        
-        <div className={styles.chartLegend}>
-          <div className={styles.legendItem}>
-            <span className={styles.legendColor} style={{backgroundColor: '#ff6b6b'}}></span>
-            Temperatura (°C)
-          </div>
-          <div className={styles.legendItem}>
-            <span className={styles.legendColor} style={{backgroundColor: '#4ecdc4'}}></span>
-            Umidade do Ar (%)
-          </div>
-          <div className={styles.legendItem}>
-            <span className={styles.legendColor} style={{backgroundColor: '#45b7d1'}}></span>
-            Umidade do Solo (%)
-          </div>
-        </div>
-      </div>
+      {/* Componente Graph */}
+      <Graph
+        sensorHistory={sensorHistory}
+        dataSource={dataSource}
+        config={config}
+        lastError={lastError}
+        title="Evolução Temporal dos Sensores"
+        showInfo={true}
+      />
 
       {/* Cards de navegação - mantendo igual */}
       <div className={styles.navigationSection}>
