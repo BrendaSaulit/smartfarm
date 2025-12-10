@@ -25,7 +25,7 @@ let esp32State = {
     LED: 'OFF',
     WATER: 'OFF',
     FAN: 'OFF',
-    BUZZER: 'OFF'
+    FEED: 'OFF'
   },
   
   // Configurações
