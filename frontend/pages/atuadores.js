@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useESP32 } from '../contexts/ESP32Context';
 import styles from '../styles/atuadores.module.css';
+import QuickControls from '../components/QuickControls';
 import {
   FiTool,
   FiGlobe,
@@ -324,54 +325,7 @@ export default function Atuador() {
       </div>
 
       {/* Controles Rápidos */}
-      <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>
-          <span className={styles.sectionIcon}><FiZap /></span>
-          Controles Rápidos
-        </h2>
-        
-        <div className={styles.quickControls}>
-          <button 
-            onClick={() => sendCmd('LED')}
-            className={styles.quickButton}
-            style={{ backgroundColor: '#ffd166' }}
-            disabled={isSendingCommand}
-          >
-            <span className={styles.quickIcon}><FiSun /></span>
-            LED
-          </button>
-          
-          <button 
-            onClick={() => sendCmd('FAN')}
-            className={styles.quickButton}
-            style={{ backgroundColor: '#4ecdc4' }}
-            disabled={isSendingCommand}
-          >
-            <span className={styles.quickIcon}><FiWind /></span>
-            Ventilador
-          </button>
-          
-          <button 
-            onClick={() => sendCmd('FEED')}
-            className={styles.quickButton}
-            style={{ backgroundColor: '#06d6a0' }}
-            disabled={isSendingCommand}
-          >
-            <span className={styles.quickIcon}><FaApple /></span>
-            Alimentar
-          </button>
-          
-          <button 
-            onClick={() => sendCmd('WATER')}
-            className={styles.quickButton}
-            style={{ backgroundColor: '#118ab2' }}
-            disabled={isSendingCommand}
-          >
-            <span className={styles.quickIcon}><FiDroplet /></span>
-            Regar
-          </button>
-        </div>
-      </div>
+      <QuickControls onSend={sendCmd} isSending={isSendingCommand} />
 
       {/* Histórico de Comandos */}
       <div className={styles.section}>
