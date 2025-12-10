@@ -36,6 +36,10 @@ let esp32State = {
   }
 };
 
+// Controle de cenário
+let currentScenario = null;
+let useRandomData = true; // Começa com dados randômicos
+
 // ==================== FUNÇÕES AUXILIARES ====================
 function normalizeLight(raw) {
   // Simula exatamente o que o ESP32 real faz
@@ -44,23 +48,55 @@ function normalizeLight(raw) {
   return Math.min(100, Math.max(0, light));
 }
 
-function generateSensorData() {
-  // RETORNA VALORES EXATOS DO ESTADO (SEM RANDOM)
-  return {
-    temperature: esp32State.sensors.temperature,
-    humidity: esp32State.sensors.humidity,
-    steam: esp32State.sensors.steam,
-    soil: esp32State.sensors.soil,
-    light: esp32State.sensors.light, // RAW value exato
-    water: esp32State.sensors.water
+function generateRandomSensorData() {
+  // Gera dados randômicos realistas
+  const baseValues = {
+    temperature: 20 + Math.random() * 15, // 20-35°C
+    humidity: 30 + Math.random() * 50, // 30-80%
+    steam: 10 + Math.random() * 15, // 10-25
+    soil: 20 + Math.random() * 60, // 20-80%
+    light: 100 + Math.random() * 1900, // 100-2000 RAW
+    water: 20 + Math.random() * 70 // 20-90%
   };
+  
+  // Adiciona um pouco de variação natural (drift)
+  return {
+    temperature: Math.round((baseValues.temperature + (Math.random() - 0.5) * 2) * 10) / 10,
+    humidity: Math.round(baseValues.humidity + (Math.random() - 0.5) * 5),
+    steam: Math.round(baseValues.steam + (Math.random() - 0.5) * 3),
+    soil: Math.round(baseValues.soil + (Math.random() - 0.5) * 10),
+    light: Math.round(baseValues.light),
+    water: Math.round(baseValues.water + (Math.random() - 0.5) * 5)
+  };
+}
+
+function generateSensorData() {
+  if (useRandomData) {
+    // Se estiver em modo randômico, gera dados aleatórios
+    const randomData = generateRandomSensorData();
+    
+    // Atualiza o estado com os dados randômicos (para manter consistência)
+    esp32State.sensors = { ...esp32State.sensors, ...randomData };
+    
+    return randomData;
+  } else {
+    // Se estiver em cenário, retorna os dados exatos do estado
+    return {
+      temperature: esp32State.sensors.temperature,
+      humidity: esp32State.sensors.humidity,
+      steam: esp32State.sensors.steam,
+      soil: esp32State.sensors.soil,
+      light: esp32State.sensors.light,
+      water: esp32State.sensors.water
+    };
+  }
 }
 
 // ==================== ENDPOINTS IDÊNTICOS AO ESP32 REAL ====================
 
 // GET /sensors - Exatamente igual ao ESP32 real
 app.get('/sensors', (req, res) => {
-  console.log(`[MOCK ESP32] ${new Date().toLocaleTimeString()} - GET /sensors`);
+  console.log(`[MOCK ESP32] ${new Date().toLocaleTimeString()} - GET /sensors (modo: ${useRandomData ? 'RANDÔMICO' : 'CENÁRIO: ' + currentScenario})`);
   
   const sensorData = generateSensorData();
   
@@ -119,10 +155,12 @@ app.get('/dev/state', (req, res) => {
   res.json({
     success: true,
     timestamp: new Date().toISOString(),
+    mode: useRandomData ? 'random' : 'scenario',
+    scenario: currentScenario,
     state: esp32State,
     endpoints: {
       real: '/sensors, /actuator',
-      dev: '/dev/state, /dev/set, /dev/scenario/*, /dev/control/*'
+      dev: '/dev/state, /dev/set, /dev/scenario/*, /dev/control/*, /dev/reset'
     }
   });
 });
@@ -133,6 +171,9 @@ app.post('/dev/set', (req, res) => {
   
   if (sensors) {
     esp32State.sensors = { ...esp32State.sensors, ...sensors };
+    // Ao definir valores manualmente, desativa modo randômico
+    useRandomData = false;
+    currentScenario = 'custom';
   }
   
   if (actuators) {
@@ -142,6 +183,8 @@ app.post('/dev/set', (req, res) => {
   res.json({
     success: true,
     message: 'Estado atualizado',
+    mode: useRandomData ? 'random' : 'scenario',
+    scenario: currentScenario,
     state: esp32State
   });
 });
@@ -169,14 +212,59 @@ app.post('/dev/scenario/:name', (req, res) => {
     });
   }
   
+  // Aplica o cenário e desativa modo randômico
   esp32State.sensors = { ...esp32State.sensors, ...scenarios[scenarioName] };
+  useRandomData = false;
+  currentScenario = scenarioName;
   
   res.json({
     success: true,
     scenario: scenarioName,
-    message: `Cenário "${scenarioName}" aplicado`,
+    mode: 'scenario',
+    message: `Cenário "${scenarioName}" aplicado (modo randômico desativado)`,
     sensors: esp32State.sensors
   });
+});
+
+// GET /dev/reset - Reset para modo randômico
+app.get('/dev/reset', (req, res) => {
+  useRandomData = true;
+  currentScenario = null;
+  
+  res.json({
+    success: true,
+    message: 'Modo randômico ativado',
+    mode: 'random',
+    scenario: null
+  });
+});
+
+// GET /dev/control/mode/:mode - Alternar entre random/scenario
+app.get('/dev/control/mode/:mode', (req, res) => {
+  const { mode } = req.params;
+  
+  if (mode === 'random') {
+    useRandomData = true;
+    currentScenario = null;
+    res.json({
+      success: true,
+      message: 'Modo randômico ativado',
+      mode: 'random'
+    });
+  } else if (mode === 'scenario') {
+    useRandomData = false;
+    res.json({
+      success: true,
+      message: 'Modo cenário ativado',
+      mode: 'scenario',
+      scenario: currentScenario || 'none'
+    });
+  } else {
+    res.status(400).json({
+      success: false,
+      error: 'Modo inválido. Use "random" ou "scenario"'
+    });
+  }
 });
 
 // GET /dev/control/connection/:status - Simular perda de conexão
@@ -217,7 +305,13 @@ app.listen(PORT, () => {
   console.log(`   GET  http://localhost:${PORT}/dev/state`);
   console.log(`   POST http://localhost:${PORT}/dev/set`);
   console.log(`   POST http://localhost:${PORT}/dev/scenario/{nome}`);
+  console.log(`   GET  http://localhost:${PORT}/dev/reset`);
+  console.log(`   GET  http://localhost:${PORT}/dev/control/mode/{random|scenario}`);
   console.log(`   GET  http://localhost:${PORT}/dev/control/connection/{fail|slow|normal}`);
+  console.log('');
+  console.log('🎲 MODO INICIAL: DADOS RANDÔMICOS');
+  console.log('   Para definir cenário específico:');
+  console.log(`   POST http://localhost:${PORT}/dev/scenario/hot_day`);
   console.log('');
   console.log('💡 Dica: Para usar, altere ESP32_IP no provider para:');
   console.log(`       const ESP32_IP = "http://localhost:${PORT}"`);
