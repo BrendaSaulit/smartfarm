@@ -137,14 +137,14 @@ export default function Atuador() {
     }
     
     // Solo
-    if (sensorData.soil < 30) {
+    if (sensorData.soil < 40) {
       recommendations.push({
         type: 'soil_dry',
         message: "Solo seco - Ativar irrigação",
         command: 'WATER',
         priority: 2
       });
-    } else if (sensorData.soil > 70) {
+    } else if (sensorData.soil > 60) {
       recommendations.push({
         type: 'soil_wet',
         message: "Solo muito úmido - Parar irrigação",
@@ -158,7 +158,7 @@ export default function Atuador() {
       recommendations.push({
         type: 'water_low',
         message: "Nível de água baixo - Verificar reservatório",
-        command: null,
+        command: 'WATER',
         priority: 3
       });
     }
@@ -183,7 +183,7 @@ export default function Atuador() {
     
     // Umidade
     if (sensorData.humidity !== undefined) {
-      if (sensorData.humidity > 70) {
+      if (sensorData.humidity > 60) {
         recommendations.push({
           type: 'humidity_high',
           message: "Umidade alta - Ventilar ambiente",
@@ -194,7 +194,7 @@ export default function Atuador() {
         recommendations.push({
           type: 'humidity_low',
           message: "Umidade baixa - Umidificar ambiente",
-          command: null,
+          command: 'WATER',
           priority: 3
         });
       }
@@ -357,12 +357,9 @@ export default function Atuador() {
           <div className={styles.connectionStatus}>
             <span className={`${styles.statusDot} ${
               autoMode ? styles.autoMode : 
-              localCommandStatus.includes('Sucesso') ? styles.connected : 
-              localCommandStatus.includes('Erro') ? styles.disconnected : 
               connectionStatus === 'Conectado' ? styles.connected : styles.disconnected}`}>
             </span>
-            {autoMode ? 'MODO AUTOMÁTICO' : 
-             localCommandStatus !== 'Pronto' ? localCommandStatus : connectionStatus}
+            {autoMode ? 'MODO AUTOMÁTICO': connectionStatus}
           </div>
           {currentAction && (
             <div className={styles.currentAction}>
@@ -387,7 +384,7 @@ export default function Atuador() {
             </span>
           </p>
           <p><strong>Modo Automático:</strong> 
-            <span className={autoMode ? styles.statusGood : styles.statusReady}>
+            <span className={autoMode ? styles.statusAutoMode : styles.statusReady}>
               {autoMode ? 'ATIVADO' : 'DESATIVADO'}
             </span>
             {autoMode && isProcessing && (
@@ -611,16 +608,10 @@ export default function Atuador() {
           <p>1. Temperatura (FAN/LED)</p>
           <p>2. Solo (WATER)</p>
           <p>3. Luminosidade (LED)</p>
-          <p>4. Umidade (FAN)</p>
-          <p><strong>Intervalo:</strong> Verifica a cada 5 segundos, executa 1 comando por vez</p>
+          <p>4. Umidade (WATER/FAN)</p>
+          <p><strong>Intervalo:</strong> Verifica a cada 1 segundo, executa 1 comando por vez</p>
         </div>
-        <div className={styles.infoCard}>
-          <h3><FiCpu /> Detalhes Técnicos</h3>
-          <p><strong>Comandos:</strong> LED, FAN, WATER</p>
-          <p><strong>Formato:</strong> HTTP GET /actuator?cmd=COMANDO</p>
-          <p><strong>Resposta:</strong> OK:COMANDO=ON/OFF</p>
-          <p><strong>Histórico:</strong> Mantém últimos 20 comandos</p>
-        </div>
+
       </div>
 
       {/* Navegação */}
