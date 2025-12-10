@@ -165,7 +165,7 @@ export default function Atuador() {
     }
     
     const lightValue = sensorData.light_normalized || sensorData.light;
-    if (lightValue < 30) {
+    if (lightValue < 50) {
       recommendations.push("Pouca luminosidade - Ativar LEDs");
     } else if (lightValue > 80) {
       recommendations.push("Luminosidade excessiva - Reduzir iluminação");

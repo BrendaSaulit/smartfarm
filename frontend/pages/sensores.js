@@ -53,7 +53,7 @@ export default function Sensores() {
   function getLightStatus(light) {
     if (!light) return 'normal';
     if (light > 80) return 'high';
-    if (light < 30) return 'low';
+    if (light < 50) return 'low';
     return 'normal';
   }
 

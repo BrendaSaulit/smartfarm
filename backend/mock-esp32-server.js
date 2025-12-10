@@ -16,7 +16,7 @@ let esp32State = {
     humidity: 60,
     steam: 15,
     soil: 45,
-    light: 512, // Valor RAW para simular sensor real
+    light: 1500, // Valor RAW para simular sensor real
     water: 50
   },
   
@@ -149,7 +149,7 @@ app.post('/dev/set', (req, res) => {
 // POST /dev/scenario/:name - Cenários predefinidos
 app.post('/dev/scenario/:name', (req, res) => {
   const scenarios = {
-    normal: { temperature: 25, humidity: 60, soil: 45, light: 6000, water: 50 },
+    normal: { temperature: 25, humidity: 60, soil: 45, light: 1500, water: 50 },
     hot_day: { temperature: 35, humidity: 40, soil: 30, light: 1200, water: 30 },
     cold_night: { temperature: 15, humidity: 80, soil: 70, light: 50, water: 70 },
     dry_soil: { temperature: 28, humidity: 35, soil: 20, light: 900, water: 20 },
