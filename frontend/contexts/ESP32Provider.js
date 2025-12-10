@@ -90,34 +90,7 @@ export default function ESP32Provider({ children }) {
       if (error.message !== lastError) {
         setLastError(error.message);
       }
-      
-      // Dados simulados para demonstração
-      const simulatedData = {
-        temperature: 25.3 + (Math.random() * 2 - 1),
-        humidity: 60 + (Math.random() * 10 - 5),
-        steam: 15 + (Math.random() * 10 - 5),
-        soil: 45 + (Math.random() * 20 - 10),
-        light: 70 + (Math.random() * 30 - 15),
-        water: 30 + (Math.random() * 40 - 20)
-      };
-      
-      setSensorData(simulatedData);
-      
-      // Atualiza histórico mesmo em modo simulação
-      setSensorHistory(prev => {
-        const newHistory = [...prev, {
-          timestamp: new Date().toLocaleTimeString(),
-          temperature: simulatedData.temperature,
-          humidity: simulatedData.humidity,
-          steam: simulatedData.steam,
-          soil: simulatedData.soil,
-          light: simulatedData.light,
-          water: simulatedData.water
-        }];
-        
-        return newHistory.slice(-20);
-      });
-      
+
       setLastUpdate(new Date().toLocaleTimeString());
       
     } finally {
