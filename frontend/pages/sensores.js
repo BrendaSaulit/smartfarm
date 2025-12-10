@@ -33,20 +33,20 @@ export default function Sensores() {
   function getTemperatureStatus(temp) {
     if (!temp) return 'normal';
     if (temp > 30) return 'high';
-    if (temp < 18) return 'low';
+    if (temp < 20) return 'low';
     return 'normal';
   }
 
   function getHumidityStatus(hum) {
     if (!hum) return 'normal';
-    if (hum > 70) return 'high';
+    if (hum > 60) return 'high';
     if (hum < 40) return 'low';
     return 'normal';
   }
 
   function getSteamStatus(steam) {
     if (!steam) return 'normal';
-    if (steam > 30) return 'high';
+    if (steam > 20) return 'high';
     return 'normal';
   }
 
@@ -59,15 +59,14 @@ export default function Sensores() {
 
   function getSoilStatus(soil) {
     if (!soil) return 'normal';
-    if (soil > 70) return 'high';
-    if (soil < 30) return 'low';
+    if (soil > 60) return 'high';
+    if (soil < 40) return 'low';
     return 'normal';
   }
 
   function getWaterStatus(water) {
     if (!water) return 'normal';
     if (water < 20) return 'low';
-    if (water > 90) return 'high';
     return 'normal';
   }
 
